@@ -19,7 +19,7 @@ makedocs(;
         assets=String[],
     ),
     pages=["Home" => "index.md"],
-    clean = true
+    clean=true,
 )
 
 deploydocs(;
