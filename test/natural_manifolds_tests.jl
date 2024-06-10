@@ -25,11 +25,11 @@
 
             @test @inferred(
                 getnaturalparameters(
-                    convert(ExponentialFamilyDistribution, M, partition_point(M, (), η))
+                    convert(ExponentialFamilyDistribution, M, partition_point(M, η))
                 )
             ) == η
 
-            p = partition_point(M, (), η)
+            p = partition_point(M, η)
             pr = rand(StableRNG(42), M)
             X = ManifoldsBase.zero_vector(M, p)
 
@@ -37,7 +37,7 @@
             @test ManifoldsBase.is_point(M, pr)
             @test ManifoldsBase.is_vector(M, p, X)
 
-            @test_opt partition_point(M, (), η)
+            @test_opt partition_point(M, η)
         end
     end
 
@@ -56,12 +56,12 @@
                 @test @inferred(
                     getnaturalparameters(
                         convert(
-                            ExponentialFamilyDistribution, M, partition_point(M, (dim,), η)
+                            ExponentialFamilyDistribution, M, partition_point(M, η)
                         ),
                     )
                 ) == η
 
-                p = partition_point(M, (dim,), η)
+                p = partition_point(M, η)
                 pr = rand(StableRNG(42), M)
                 X = ManifoldsBase.zero_vector(M, p)
 
@@ -69,7 +69,7 @@
                 @test ManifoldsBase.is_point(M, pr)
                 @test ManifoldsBase.is_vector(M, p, X)
 
-                @test_opt partition_point(M, (dim,), η)
+                @test_opt partition_point(M, η)
             end
         end
     end
