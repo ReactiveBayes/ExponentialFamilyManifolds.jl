@@ -11,6 +11,8 @@ CurrentModule = ExponentialFamilyManifolds
 
 # Manifolds
 
+## Distribution specific manifolds
+
 ```@docs 
 ExponentialFamilyManifolds.get_natural_manifold
 ExponentialFamilyManifolds.NaturalParametersManifold
@@ -27,8 +29,6 @@ ExponentialFamilyManifolds.ShiftedPositiveNumbers
 ExponentialFamilyManifolds.ShiftedNegativeNumbers
 ExponentialFamilyManifolds.SymmetricNegativeDefinite
 ```
-
-## Distribution specific manifolds
 
 # Helpers 
 
