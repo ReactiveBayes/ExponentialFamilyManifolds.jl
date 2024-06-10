@@ -5,13 +5,16 @@
         NaturalParametersManifold,
         ShiftedPositiveNumbers,
         get_natural_manifold,
-        partition_point
+        get_natural_manifold_base,
+        partition_point,
+        getbase
 
     @testset "Without dimension" begin
         M = @inferred(get_natural_manifold(Beta, ()))
 
         @test M isa NaturalParametersManifold
         @test M isa AbstractManifold
+        @test getbase(M) === get_natural_manifold_base(Beta, ())
 
         @test_opt get_natural_manifold(Beta, ())
 
@@ -47,6 +50,7 @@
 
             @test M isa NaturalParametersManifold
             @test M isa AbstractManifold
+            @test getbase(M) === get_natural_manifold_base(MvNormalMeanCovariance, (dim,))
 
             for _ in 1:10
                 dist = MvNormalMeanCovariance(ones(dim), Matrix(Diagonal(ones(dim))))
