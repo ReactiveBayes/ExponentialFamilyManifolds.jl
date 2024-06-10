@@ -11,6 +11,13 @@ CurrentModule = ExponentialFamilyManifolds
 
 # Manifolds
 
+```@docs 
+ExponentialFamilyManifolds.get_natural_manifold
+ExponentialFamilyManifolds.NaturalParametersManifold
+ExponentialFamilyManifolds.get_natural_manifold_base
+ExponentialFamilyManifolds.partition_point
+```
+
 ## Custom generic manifolds
 
 `ExponentialFamilyManifolds.jl` provides some extra manifolds, which are not included in the `Manifolds.jl`

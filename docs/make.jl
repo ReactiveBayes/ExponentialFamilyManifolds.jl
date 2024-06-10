@@ -10,7 +10,7 @@ DocMeta.setdocmeta!(
 
 makedocs(;
     modules=[ExponentialFamilyManifolds],
-    warnonly=true,
+    warnonly=false,
     authors="Mykola Lukashchuk <m.lukashchuk@tue.nl>, Dmitry Bagaev <bvdmitri@gmail.com> and contributors",
     sitename="ExponentialFamilyManifolds.jl",
     format=Documenter.HTML(;
@@ -19,6 +19,7 @@ makedocs(;
         assets=String[],
     ),
     pages=["Home" => "index.md"],
+    clean = true
 )
 
 deploydocs(;

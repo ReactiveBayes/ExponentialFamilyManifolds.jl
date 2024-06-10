@@ -1,4 +1,10 @@
 
+"""
+    ShiftedPositiveNumbers(shift)
+
+A manifold representing the positive numbers shifted by `shift`. 
+The points on this manifold are 1-dimensional vectors with a single element.
+"""
 struct ShiftedPositiveNumbers{S} <: AbstractManifold{ℝ}
     shift::S
 end
