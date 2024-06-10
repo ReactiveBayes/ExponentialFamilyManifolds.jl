@@ -59,15 +59,18 @@ function get_natural_manifold(::Type{T}, dims, conditioner=nothing) where {T}
 end
 
 """
+    get_natural_manifold_base(M::NaturalParametersManifold)
     get_natural_manifold_base(::Type{T}, dims, conditioner = nothing)
 
 Returns `base` manifold for the distribution of type `T` of dimension `dims`.
 Optionally accepts the conditioner, which is set to `nothing` by default.
 """
-function get_natural_manifold_base end
+function get_natural_manifold_base(M::NaturalParametersManifold) 
+    return getbase(M)
+end
 
 """
-    partition_point(M::NaturalParametersManifold, dims, p)
+    partition_point(M::NaturalParametersManifold, p)
     partition_point(::Type{T}, dims, point, conditioner=nothing)
 
 Converts the `point` to a compatible representation for the natural manifold `M` of type `T`.
