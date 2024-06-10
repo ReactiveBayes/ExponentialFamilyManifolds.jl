@@ -1,20 +1,20 @@
 @testitem "Generic properties of Negative Definite Matrices" begin
-    import ExponentialFamilyManifolds: NegativeDefiniteMatrices
+    import ExponentialFamilyManifolds: SymmetricNegativeDefinite
     import ManifoldsBase: check_point, check_vector
     using ManifoldsBase, StaticArrays, JET, Manifolds, StableRNGs, LinearAlgebra
 
     rng = StableRNG(42)
 
     for size in (2, 4, 8)
-        M = NegativeDefiniteMatrices(size)
+        M = SymmetricNegativeDefinite(size)
 
-        @test repr(M) == "NegativeDefiniteMatrices($size)"
+        @test repr(M) == "SymmetricNegativeDefinite($size)"
 
         @test @inferred(representation_size(M)) === (size, size)
         @test @inferred(manifold_dimension(M)) === ((size) * (size + 1)) ÷ 2
         @test @inferred(injectivity_radius(M)) === Inf
         @test @inferred(is_flat(M)) === false
-        @test @inferred(get_embedding(M)) === Euclidean(size, size, field = ℝ)
+        @test @inferred(get_embedding(M)) === Euclidean(size, size; field=ℝ)
 
         @test @allocated(representation_size(M)) === 0
         @test @allocated(manifold_dimension(M)) === 0
@@ -58,12 +58,12 @@ end
 @testitem "Manifolds.test_manifold" begin
     using Manifolds, Static, Random, StaticArrays, StableRNGs, LinearAlgebra
 
-    import ExponentialFamilyManifolds: NegativeDefiniteMatrices
+    import ExponentialFamilyManifolds: SymmetricNegativeDefinite
 
     rng = StableRNG(42)
 
-    for size = 2:5
-        M = NegativeDefiniteMatrices(size)
+    for size in 2:5
+        M = SymmetricNegativeDefinite(size)
 
         ptss = [
             [
@@ -96,21 +96,20 @@ end
         for pts in ptss
             Manifolds.test_manifold(
                 M,
-                pts,
-                test_vector_spaces = true,
-                test_rand_point = true,
-                test_rand_tvector = true,
-                test_inplace = true,
-                test_is_tangent = true,
-                test_mutating_rand = true,
-                test_project_tangent = true,
-                test_default_vector_transport = true,
-                is_tangent_atol_multiplier = 1e1,
-                exp_log_atol_multiplier = 1e2,
+                pts;
+                test_vector_spaces=true,
+                test_rand_point=true,
+                test_rand_tvector=true,
+                test_inplace=true,
+                test_is_tangent=true,
+                test_mutating_rand=true,
+                test_project_tangent=true,
+                test_default_vector_transport=true,
+                is_tangent_atol_multiplier=1e1,
+                exp_log_atol_multiplier=1e2,
                 # vector_transport_methods = [ParallelTransport()],
             )
         end
-
     end
 end
 
@@ -126,12 +125,11 @@ end
         @test @allocated(negate!(M)) === 0
         @test_opt negate!(M)
     end
-
 end
 
 @testitem "Negated" begin
     import ExponentialFamilyManifolds: negate!
-    import ExponentialFamilyManifolds: NegativeDefiniteMatrices, Negated
+    import ExponentialFamilyManifolds: SymmetricNegativeDefinite, Negated
     using JET, Manifolds, LinearAlgebra
 
     m = rand(10, 10)
@@ -155,7 +153,7 @@ end
     @test eltype(m) === eltype(mn)
     @test size(m) === size(mn)
     @test length(m) === length(mn)
-    for i = 1:10, j = 1:10
+    for i in 1:10, j in 1:10
         @test getindex(m, i, j) ≈ -getindex(mn, i, j)
         @test @eval(@allocated(getindex($mn, $i, $j))) === 0
     end
@@ -177,17 +175,16 @@ end
         @test isposdef(m)
         @test !@inferred(isposdef(Negated(m)))
 
-        m = rand(NegativeDefiniteMatrices(n))
+        m = rand(SymmetricNegativeDefinite(n))
         @test !isposdef(m)
         @test @inferred(isposdef(Negated(m)))
 
         @test_opt isposdef(Negated(m))
     end
-
 end
 
 @testitem "Simple manifolds optimization #1" begin
-    import ExponentialFamilyManifolds: NegativeDefiniteMatrices
+    import ExponentialFamilyManifolds: SymmetricNegativeDefinite
     using ForwardDiff, StableRNGs, LinearAlgebra, Manopt, ManifoldsBase
 
     a = 1
@@ -198,20 +195,19 @@ end
     g(M, X) = ForwardDiff.gradient((x) -> f(M, x), X)
 
     for size in (3, 5, 7), eps in (1e-3, 1e-5), stepsize in (0.1, 0.01, 0.001)
-        M = NegativeDefiniteMatrices(size)
+        M = SymmetricNegativeDefinite(size)
         p0 = rand(StableRNG(42), M)
 
         expected_n = -b / 2a
         expected_minimum = c - b^2 / (4a)
-
 
         q1 = gradient_descent(
             M,
             f,
             g,
             p0;
-            stepsize = ConstantStepsize(stepsize),
-            stopping_criterion = StopWhenGradientNormLess(eps),
+            stepsize=ConstantStepsize(stepsize),
+            stopping_criterion=StopWhenGradientNormLess(eps),
         )
 
         @test all(<(0), eigvals(q1))

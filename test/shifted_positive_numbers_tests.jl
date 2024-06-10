@@ -16,7 +16,7 @@
         @test @inferred(manifold_dimension(M)) === 1
         @test @inferred(injectivity_radius(M)) === Inf
         @test @inferred(is_flat(M)) === false
-        @test @inferred(get_embedding(M)) === Euclidean(1, field = ℝ)
+        @test @inferred(get_embedding(M)) === Euclidean(1; field=ℝ)
 
         @test_opt representation_size(M)
         @test_opt manifold_dimension(M)
@@ -117,7 +117,6 @@ end
     @test @allocated(foo()) === 0
 end
 
-
 @testitem "Manifolds.test_manifold" begin
     using Manifolds, Static, Random, StaticArrays
 
@@ -131,24 +130,23 @@ end
         ptss = [
             [[s + 1], [s + 2], [s + 3]],
             [@SVector([s + 1]), @SVector([s + 2]), @SVector([s + 3])],
-            [rand(M) for _ = 1:10],
+            [rand(M) for _ in 1:10],
         ]
 
         for pts in ptss
             Manifolds.test_manifold(
                 M,
-                pts,
-                test_vector_spaces = true,
-                test_rand_point = true,
-                test_rand_tvector = true,
-                test_inplace = true,
-                test_is_tangent = true,
-                test_mutating_rand = true,
-                test_project_tangent = true,
-                test_default_vector_transport = true,
+                pts;
+                test_vector_spaces=true,
+                test_rand_point=true,
+                test_rand_tvector=true,
+                test_inplace=true,
+                test_is_tangent=true,
+                test_mutating_rand=true,
+                test_project_tangent=true,
+                test_default_vector_transport=true,
             )
         end
-
     end
 end
 
@@ -161,7 +159,7 @@ end
         b in (-10.0, -5.0),
         c in (1.0, 10.0, -1.0),
         eps in (1e-4, 1e-5, 1e-8, 1e-10),
-        stepsize in (ConstantStepsize(0.1), ConstantStepsize(0.01), ConstantStepsize(0.001), )
+        stepsize in (ConstantStepsize(0.1), ConstantStepsize(0.01), ConstantStepsize(0.001))
 
         expected_q = -b / 2a
         expected_minimum = c - b^2 / (4a)
@@ -172,7 +170,6 @@ end
         rng = StableRNG(42)
 
         for s in [0, 0.0, expected_q - 10, static(0), static(expected_q - 1)]
-
             M = ShiftedPositiveNumbers(s)
             p0 = rand(rng, M)
 
@@ -181,9 +178,9 @@ end
                 f,
                 grad_f,
                 p0;
-                stepsize = stepsize,
-                stopping_criterion = StopWhenGradientNormLess(eps) |
-                                     StopAfterIteration(1_000_000),
+                stepsize=stepsize,
+                stopping_criterion=StopWhenGradientNormLess(eps) |
+                                   StopAfterIteration(1_000_000),
             )
 
             @test q1[1] ≈ expected_q rtol = 2eps
@@ -191,7 +188,6 @@ end
             @test norm(M, f(M, q1), grad_f(M, q1)) <= 10eps # adjusted to stepsize
         end
     end
-
 end
 
 @testitem "Simple manifold optimization problem with inplace evaluation #2" begin
@@ -232,16 +228,16 @@ end
 
     function prepare_state(M, p0)
         q = copy(p0)
-        obj = ManifoldGradientObjective(missing, grad_f!; evaluation = InplaceEvaluation())
+        obj = ManifoldGradientObjective(missing, grad_f!; evaluation=InplaceEvaluation())
         dmp = DefaultManoptProblem(M, obj)
         s = GradientDescentState(
             M,
             q;
-            stopping_criterion = StopWhenGradientNormLessNonAllocating(1e-8),
-            stepsize = ConstantStepsizeNonAllocating(0.1),
-            direction = IdentityUpdateRule(),
-            retraction_method = default_retraction_method(M, typeof(q)),
-            X = zero_vector(M, q),
+            stopping_criterion=StopWhenGradientNormLessNonAllocating(1e-8),
+            stepsize=ConstantStepsizeNonAllocating(0.1),
+            direction=IdentityUpdateRule(),
+            retraction_method=default_retraction_method(M, typeof(q)),
+            X=zero_vector(M, q),
         )
         return dmp, s
     end

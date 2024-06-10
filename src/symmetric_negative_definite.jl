@@ -1,29 +1,39 @@
 
-struct NegativeDefiniteMatrices{B} <: AbstractManifold{ℝ}
+"""
+    SymmetricNegativeDefinite(k)
+
+This manifold represents the set of negative definite matrices of size `k × k`. 
+Similar to `SymmetricPositiveDefinite` from `Manifolds.jl` with the exception that the matrices are negative definite.
+"""
+struct SymmetricNegativeDefinite{B} <: AbstractManifold{ℝ}
     base::B
 
-    function NegativeDefiniteMatrices(size)
+    function SymmetricNegativeDefinite(size)
         base = SymmetricPositiveDefinite(size)
         return new{typeof(base)}(base)
     end
 end
 
-function Base.show(io::IO, M::NegativeDefiniteMatrices)
-    print(io, "NegativeDefiniteMatrices(", first(representation_size(M.base)), ")")
+function Base.show(io::IO, M::SymmetricNegativeDefinite)
+    return print(io, "SymmetricNegativeDefinite(", first(representation_size(M.base)), ")")
 end
 
-ManifoldsBase.get_embedding(M::NegativeDefiniteMatrices) =
-    ManifoldsBase.get_embedding(M.base)
+function ManifoldsBase.get_embedding(M::SymmetricNegativeDefinite)
+    return ManifoldsBase.get_embedding(M.base)
+end
 
-ManifoldsBase.representation_size(M::NegativeDefiniteMatrices) =
-    ManifoldsBase.representation_size(M.base)
-ManifoldsBase.manifold_dimension(M::NegativeDefiniteMatrices) =
-    ManifoldsBase.manifold_dimension(M.base)
-ManifoldsBase.injectivity_radius(M::NegativeDefiniteMatrices) =
-    ManifoldsBase.injectivity_radius(M.base)
-ManifoldsBase.is_flat(M::NegativeDefiniteMatrices) = ManifoldsBase.is_flat(M.base)
+function ManifoldsBase.representation_size(M::SymmetricNegativeDefinite)
+    return ManifoldsBase.representation_size(M.base)
+end
+function ManifoldsBase.manifold_dimension(M::SymmetricNegativeDefinite)
+    return ManifoldsBase.manifold_dimension(M.base)
+end
+function ManifoldsBase.injectivity_radius(M::SymmetricNegativeDefinite)
+    return ManifoldsBase.injectivity_radius(M.base)
+end
+ManifoldsBase.is_flat(M::SymmetricNegativeDefinite) = ManifoldsBase.is_flat(M.base)
 
-function ManifoldsBase.check_point(M::NegativeDefiniteMatrices, p; kwargs...)
+function ManifoldsBase.check_point(M::SymmetricNegativeDefinite, p; kwargs...)
     if !isapprox(norm(p - transpose(p)), 0.0; kwargs...)
         return DomainError(
             norm(p - transpose(p)),
@@ -39,7 +49,7 @@ function ManifoldsBase.check_point(M::NegativeDefiniteMatrices, p; kwargs...)
     return nothing
 end
 
-function ManifoldsBase.check_vector(M::NegativeDefiniteMatrices, p, X; kwargs...)
+function ManifoldsBase.check_vector(M::SymmetricNegativeDefinite, p, X; kwargs...)
     if !isapprox(X, transpose(X); kwargs...)
         return DomainError(
             X,
@@ -49,80 +59,71 @@ function ManifoldsBase.check_vector(M::NegativeDefiniteMatrices, p, X; kwargs...
     return nothing
 end
 
-ManifoldsBase.embed(::NegativeDefiniteMatrices, p) = p
-ManifoldsBase.embed(::NegativeDefiniteMatrices, p, X) = X
+ManifoldsBase.embed(::SymmetricNegativeDefinite, p) = p
+ManifoldsBase.embed(::SymmetricNegativeDefinite, p, X) = X
 
-function ManifoldsBase.inner(M::NegativeDefiniteMatrices, p, X, Y)
+function ManifoldsBase.inner(M::SymmetricNegativeDefinite, p, X, Y)
     return ManifoldsBase.inner(M.base, Negated(p), Negated(X), Negated(Y))
 end
 
-function ManifoldsBase.exp!(M::NegativeDefiniteMatrices, q, p, X, t::Number = 1)
+function ManifoldsBase.exp!(M::SymmetricNegativeDefinite, q, p, X, t::Number=1)
     ManifoldsBase.exp!(M.base, q, Negated(p), Negated(X), t)
     return negate!(q)
 end
 
-function ManifoldsBase.log!(M::NegativeDefiniteMatrices, X, p, q)
+function ManifoldsBase.log!(M::SymmetricNegativeDefinite, X, p, q)
     ManifoldsBase.log!(M.base, X, Negated(p), Negated(q))
     return negate!(X)
 end
 
-function ManifoldsBase.project!(M::NegativeDefiniteMatrices, Y, p, X)
+function ManifoldsBase.project!(M::SymmetricNegativeDefinite, Y, p, X)
     ManifoldsBase.project!(M.base, Y, Negated(p), Negated(X))
     return negate!(Y)
 end
 
-ManifoldsBase.default_retraction_method(::NegativeDefiniteMatrices) =
-    ExponentialRetraction()
+function ManifoldsBase.default_retraction_method(::SymmetricNegativeDefinite)
+    return ExponentialRetraction()
+end
 
-ManifoldsBase.retract!(
-    M::NegativeDefiniteMatrices,
-    q,
-    p,
-    X,
-    t::Number,
-    ::ExponentialRetraction,
-) = ManifoldsBase.exp!(M, q, p, X, t)
+function ManifoldsBase.retract!(
+    M::SymmetricNegativeDefinite, q, p, X, t::Number, ::ExponentialRetraction
+)
+    return ManifoldsBase.exp!(M, q, p, X, t)
+end
 
-function ManifoldsBase.parallel_transport_to!(M::NegativeDefiniteMatrices, Y, p, X, q)
+function ManifoldsBase.parallel_transport_to!(M::SymmetricNegativeDefinite, Y, p, X, q)
     parallel_transport_to!(M.base, Y, Negated(p), Negated(X), Negated(q))
     return negate!(Y)
 end
 
-ManifoldsBase.zero_vector!(::NegativeDefiniteMatrices, X, p) = fill!(X, 0)
+ManifoldsBase.zero_vector!(::SymmetricNegativeDefinite, X, p) = fill!(X, 0)
 
-function Random.rand(M::NegativeDefiniteMatrices; vector_at = nothing, kwargs...)
-    return rand(Random.default_rng(), M; vector_at = vector_at, kwargs...)
+function Random.rand(M::SymmetricNegativeDefinite; vector_at=nothing, kwargs...)
+    return rand(Random.default_rng(), M; vector_at=vector_at, kwargs...)
 end
 
 function Random.rand(
-    rng::AbstractRNG,
-    M::NegativeDefiniteMatrices;
-    vector_at = nothing,
-    kwargs...,
+    rng::AbstractRNG, M::SymmetricNegativeDefinite; vector_at=nothing, kwargs...
 )
     return negate!(
         rand(
             rng,
             M.base;
-            vector_at = isnothing(vector_at) ? nothing : Negated(vector_at),
+            vector_at=isnothing(vector_at) ? nothing : Negated(vector_at),
             kwargs...,
         ),
     )
 end
 
 function Random.rand!(
-    rng::AbstractRNG,
-    M::NegativeDefiniteMatrices,
-    pX;
-    vector_at = nothing,
-    kwargs...,
+    rng::AbstractRNG, M::SymmetricNegativeDefinite, pX; vector_at=nothing, kwargs...
 )
     return negate!(
         Random.rand!(
             rng,
             M.base,
             pX;
-            vector_at = isnothing(vector_at) ? nothing : Negated(vector_at),
+            vector_at=isnothing(vector_at) ? nothing : Negated(vector_at),
             kwargs...,
         ),
     )

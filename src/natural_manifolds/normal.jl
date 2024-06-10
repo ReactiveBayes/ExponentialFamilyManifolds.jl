@@ -16,7 +16,7 @@ function get_natural_manifold_base(
     conditioner = nothing,
 )
     k = first(dims)
-    return ProductManifold(Euclidean(k), NegativeDefiniteMatrices(k))
+    return ProductManifold(Euclidean(k), SymmetricNegativeDefinite(k))
 end
 
 function partition_point(

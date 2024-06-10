@@ -18,14 +18,14 @@
         # Generate a couple of random Beta distributions 
         # and check that their natural parameters are within the 
         # natural parameters manifold
-        for _ = 1:10
+        for _ in 1:10
             dist = Beta(rand() + 1, rand() + 10)
             ef = convert(ExponentialFamilyDistribution, dist)
             η = getnaturalparameters(ef)
 
             @test @inferred(
                 getnaturalparameters(
-                    convert(ExponentialFamilyDistribution, M, partition_point(M, (), η)),
+                    convert(ExponentialFamilyDistribution, M, partition_point(M, (), η))
                 )
             ) == η
 
@@ -42,13 +42,13 @@
     end
 
     @testset "With dimension" begin
-        for dim = 3:5
+        for dim in 3:5
             M = get_natural_manifold(MvNormalMeanCovariance, (dim,))
 
             @test M isa NaturalParametersManifold
             @test M isa AbstractManifold
 
-            for _ = 1:10
+            for _ in 1:10
                 dist = MvNormalMeanCovariance(ones(dim), Matrix(Diagonal(ones(dim))))
                 ef = convert(ExponentialFamilyDistribution, dist)
                 η = getnaturalparameters(ef)
@@ -56,9 +56,7 @@
                 @test @inferred(
                     getnaturalparameters(
                         convert(
-                            ExponentialFamilyDistribution,
-                            M,
-                            partition_point(M, (dim,), η),
+                            ExponentialFamilyDistribution, M, partition_point(M, (dim,), η)
                         ),
                     )
                 ) == η
@@ -67,7 +65,7 @@
                 pr = rand(StableRNG(42), M)
                 X = ManifoldsBase.zero_vector(M, p)
 
-                @test ManifoldsBase.is_point(M, p, error = :error)
+                @test ManifoldsBase.is_point(M, p, error=:error)
                 @test ManifoldsBase.is_point(M, pr)
                 @test ManifoldsBase.is_vector(M, p, X)
 
@@ -75,5 +73,4 @@
             end
         end
     end
-
 end

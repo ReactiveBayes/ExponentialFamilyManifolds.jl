@@ -9,6 +9,22 @@ CurrentModule = ExponentialFamilyManifolds
 ```@index
 ```
 
-```@autodocs
-Modules = [ExponentialFamilyManifolds]
+# Manifolds
+
+## Custom generic manifolds
+
+`ExponentialFamilyManifolds.jl` provides some extra manifolds, which are not included in the `Manifolds.jl`
+
+```@docs
+ExponentialFamilyManifolds.ShiftedPositiveNumbers
+ExponentialFamilyManifolds.ShiftedNegativeNumbers
+ExponentialFamilyManifolds.SymmetricNegativeDefinite
+```
+
+## Distribution specific manifolds
+
+# Helpers 
+
+```@docs 
+ExponentialFamilyManifolds.Negated
 ```

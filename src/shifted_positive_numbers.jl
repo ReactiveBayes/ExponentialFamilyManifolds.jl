@@ -3,8 +3,9 @@ struct ShiftedPositiveNumbers{S} <: AbstractManifold{ℝ}
     shift::S
 end
 
-Base.show(io::IO, M::ShiftedPositiveNumbers) =
-    print(io, "ShiftedPositiveNumbers(", getshift(M), ")")
+function Base.show(io::IO, M::ShiftedPositiveNumbers)
+    return print(io, "ShiftedPositiveNumbers(", getshift(M), ")")
+end
 
 getshift(M::ShiftedPositiveNumbers) = M.shift
 
@@ -16,12 +17,13 @@ shift(M::ShiftedPositiveNumbers, p) = p .+ M.shift
 shift(M::ShiftedPositiveNumbers, p::Real) = p + M.shift
 shift!(M::ShiftedPositiveNumbers, X, p) = map!(Base.Fix2(+, M.shift), X, p)
 
-ManifoldsBase.get_embedding(::ShiftedPositiveNumbers) = Euclidean(1, field = ℝ)
+ManifoldsBase.get_embedding(::ShiftedPositiveNumbers) = Euclidean(1; field=ℝ)
 
 ManifoldsBase.representation_size(::ShiftedPositiveNumbers) = (1,)
 ManifoldsBase.manifold_dimension(::ShiftedPositiveNumbers) = 1
-ManifoldsBase.injectivity_radius(::ShiftedPositiveNumbers) =
-    ManifoldsBase.injectivity_radius(PositiveNumbers())
+function ManifoldsBase.injectivity_radius(::ShiftedPositiveNumbers)
+    return ManifoldsBase.injectivity_radius(PositiveNumbers())
+end
 ManifoldsBase.is_flat(::ShiftedPositiveNumbers) = ManifoldsBase.is_flat(PositiveNumbers())
 
 function ManifoldsBase.check_point(M::ShiftedPositiveNumbers, p; kwargs...)
@@ -44,21 +46,15 @@ ManifoldsBase.embed(::ShiftedPositiveNumbers, p, X) = X
 
 function ManifoldsBase.inner(M::ShiftedPositiveNumbers, p, X, Y)
     return ManifoldsBase.inner(
-        PositiveNumbers(),
-        unshift(M, @inbounds(p[1])),
-        @inbounds(X[1]),
-        @inbounds(Y[1])
+        PositiveNumbers(), unshift(M, @inbounds(p[1])), @inbounds(X[1]), @inbounds(Y[1])
     )
 end
 
-function ManifoldsBase.exp!(M::ShiftedPositiveNumbers, q, p, X, t::Number = 1)
+function ManifoldsBase.exp!(M::ShiftedPositiveNumbers, q, p, X, t::Number=1)
     @inbounds q[1] = shift(
         M,
         ManifoldsBase.exp(
-            PositiveNumbers(),
-            unshift(M, @inbounds(p[1])),
-            @inbounds(X[1]),
-            t,
+            PositiveNumbers(), unshift(M, @inbounds(p[1])), @inbounds(X[1]), t
         ),
     )
     return q
@@ -66,37 +62,29 @@ end
 
 function ManifoldsBase.log!(M::ShiftedPositiveNumbers, X, p, q)
     @inbounds X[1] = ManifoldsBase.log(
-        PositiveNumbers(),
-        unshift(M, @inbounds(p[1])),
-        unshift(M, @inbounds(q[1])),
+        PositiveNumbers(), unshift(M, @inbounds(p[1])), unshift(M, @inbounds(q[1]))
     )
     return X
 end
 
 function ManifoldsBase.project!(M::ShiftedPositiveNumbers, Y, p, X)
-    @inbounds Y[1] =
-        project(PositiveNumbers(), unshift(M, @inbounds(p[1])), @inbounds(X[1]))
+    @inbounds Y[1] = project(
+        PositiveNumbers(), unshift(M, @inbounds(p[1])), @inbounds(X[1])
+    )
     return Y
 end
 
 ManifoldsBase.default_retraction_method(::ShiftedPositiveNumbers) = ExponentialRetraction()
 
-ManifoldsBase.retract!(
-    M::ShiftedPositiveNumbers,
-    q,
-    p,
-    X,
-    t::Number,
-    ::ExponentialRetraction,
-) = ManifoldsBase.exp!(M, q, p, X, t)
+function ManifoldsBase.retract!(
+    M::ShiftedPositiveNumbers, q, p, X, t::Number, ::ExponentialRetraction
+)
+    return ManifoldsBase.exp!(M, q, p, X, t)
+end
 
 function ManifoldsBase.parallel_transport_to!(M::ShiftedPositiveNumbers, Y, p, X, q)
     return parallel_transport_to!(
-        PositiveNumbers(),
-        Y,
-        unshift(M, @inbounds(p[1])),
-        X,
-        unshift(M, @inbounds(q[1])),
+        PositiveNumbers(), Y, unshift(M, @inbounds(p[1])), X, unshift(M, @inbounds(q[1]))
     )
 end
 
@@ -114,5 +102,5 @@ end
 function Random.rand!(rng::AbstractRNG, M::ShiftedPositiveNumbers, pX; kwargs...)
     Random.rand!(rng, PositiveNumbers(), pX; kwargs...)
     shift!(M, pX, pX)
-    return
+    return nothing
 end
