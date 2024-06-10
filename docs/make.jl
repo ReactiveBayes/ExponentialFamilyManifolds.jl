@@ -5,7 +5,7 @@ DocMeta.setdocmeta!(ExponentialFamilyManifolds, :DocTestSetup, :(using Exponenti
 
 makedocs(;
     modules=[ExponentialFamilyManifolds],
-    authors="Bagaev Dmitry <bvdmitri@gmail.com> and contributors",
+    authors="Mykola Lukashchuk <m.lukashchuk@tue.nl>, Dmitry Bagaev <bvdmitri@gmail.com> and contributors",
     sitename="ExponentialFamilyManifolds.jl",
     format=Documenter.HTML(;
         canonical="https://ReactiveBayes.github.io/ExponentialFamilyManifolds.jl",

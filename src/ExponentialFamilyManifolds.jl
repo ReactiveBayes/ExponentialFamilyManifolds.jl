@@ -1,5 +1,5 @@
 module ExponentialFamilyManifolds
 
-# Write your package code here.
+using BayesBase, ExponentialFamily, ManifoldsBase, Manifolds
 
 end
