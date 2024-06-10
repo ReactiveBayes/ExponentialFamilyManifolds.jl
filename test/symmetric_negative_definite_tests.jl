@@ -16,11 +16,11 @@
         @test @inferred(is_flat(M)) === false
         @test @inferred(get_embedding(M)) === Euclidean(size, size; field=ℝ)
 
-        @test @allocated(representation_size(M)) === 0
-        @test @allocated(manifold_dimension(M)) === 0
-        @test @allocated(injectivity_radius(M)) === 0
-        @test @allocated(is_flat(M)) === 0
-        @test @allocated(get_embedding(M)) === 0
+        @test @eval(@allocated(representation_size($M))) === 0
+        @test @eval(@allocated(manifold_dimension($M))) === 0
+        @test @eval(@allocated(injectivity_radius($M))) === 0
+        @test @eval(@allocated(is_flat($M))) === 0
+        @test @eval(@allocated(get_embedding($M))) === 0
 
         @test_opt representation_size(M)
         @test_opt manifold_dimension(M)
