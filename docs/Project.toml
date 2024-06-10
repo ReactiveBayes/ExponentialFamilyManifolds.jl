@@ -1,3 +1,5 @@
 [deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ExponentialFamily = "62312e5e-252a-4322-ace9-a5f4bf9b357b"
 ExponentialFamilyManifolds = "5c9727c4-3b82-4ab3-b165-76e2eb971b08"
