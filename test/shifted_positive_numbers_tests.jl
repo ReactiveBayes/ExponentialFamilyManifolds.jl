@@ -62,10 +62,11 @@
         @test_opt check_vector(M, [s + 1], [s])
 
         # Test that those functions are not allocating
-        @test @allocated(representation_size(M)) === 0
-        @test @allocated(manifold_dimension(M)) === 0
-        @test @allocated(injectivity_radius(M)) === 0
-        @test @allocated(is_flat(M)) === 0
+        # `@eval` is required in CI...
+        @test @eval(@allocated(representation_size($M))) === 0
+        @test @eval(@allocated(manifold_dimension($M))) === 0
+        @test @eval(@allocated(injectivity_radius($M))) === 0
+        @test @eval(@allocated(is_flat($M))) === 0
         @test @eval(@allocated(getshift($M))) === 0
 
         p = [s + 1]
