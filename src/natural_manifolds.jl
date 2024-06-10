@@ -44,6 +44,10 @@ function get_natural_manifold(::Type{T}, dims, conditioner = nothing) where {T}
     )
 end
 
+function get_natural_manifold(ef::ExponentialFamilyDistribution)
+    return get_natural_manifold(exponential_family_typetag(ef), getconditioner(ef))
+end
+
 """
     get_natural_manifold_base(::Type{T}, conditioner = nothing)
 

@@ -3,10 +3,12 @@ function get_natural_manifold_base(
     dims::Tuple{Int},
     conditioner = nothing,
 )
-    # `ProductManifold` here is important to treat the `PowerManifold` as a vector, and not matrix
+    # `PowerManifold` does treat the vector as a matrix with one row
+    # In the `parition_point` we transpose the vector and use `ArrayPartition` for `ProductManifold`
     return ProductManifold(PowerManifold(ShiftedPositiveNumbers(static(-1)), first(dims)))
 end
 
 function partition_point(::Type{Dirichlet}, dims::Tuple{Int}, p, conditioner = nothing)
-    return p
+    # See comment in `get_natural_manifold_base` for `Dirichlet`
+    return ArrayPartition(p')
 end
