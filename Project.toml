@@ -1,6 +1,6 @@
 name = "ExponentialFamilyManifolds"
 uuid = "5c9727c4-3b82-4ab3-b165-76e2eb971b08"
-authors = ["Mykola Lukashchuk <m.lukashchuk@tue.nl>, Dmitry Bagaev <bvdmitri@gmail.com> and contributors"]
+authors = ["Mykola Lukashchuk <m.lukashchuk@tue.nl>", "Dmitry Bagaev <bvdmitri@gmail.com>", "Albert Podusenko <albert@lazydynamics.com>"]
 version = "1.0.0"
 
 [deps]

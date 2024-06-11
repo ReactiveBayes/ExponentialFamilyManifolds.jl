@@ -138,6 +138,23 @@ negate!(p) = map!(Base.Fix2(*, -1), p, p)
 
 Lazily negates the matrix `m`, without creating a new matrix. 
 Works by redefining the `getindex`.
+
+```jldoctest
+julia> using ExponentialFamilyManifolds
+
+julia> m = [1 2; 3 4]
+2×2 Matrix{Int64}:
+ 1  2
+ 3  4
+
+julia> N = ExponentialFamilyManifolds.Negated(m)
+2×2 ExponentialFamilyManifolds.Negated{Int64, Matrix{Int64}}:
+ -1  -2
+ -3  -4
+
+julia> N[1, 2]
+-2
+```
 """
 struct Negated{T,M} <: AbstractMatrix{T}
     m::M
