@@ -11,7 +11,7 @@ DocMeta.setdocmeta!(
 makedocs(;
     modules=[ExponentialFamilyManifolds],
     warnonly=false,
-    authors="Mykola Lukashchuk <m.lukashchuk@tue.nl>, Dmitry Bagaev <bvdmitri@gmail.com> and contributors",
+    authors="Mykola Lukashchuk <m.lukashchuk@tue.nl>, Dmitry Bagaev <bvdmitri@gmail.com>, Albert Podusenko <albert@lazydynamics.com> and contributors",
     sitename="ExponentialFamilyManifolds.jl",
     format=Documenter.HTML(;
         canonical="https://ReactiveBayes.github.io/ExponentialFamilyManifolds.jl",
