@@ -20,6 +20,7 @@ makedocs(;
     ),
     pages=["Home" => "index.md"],
     clean=true,
+    repo="github.com/ReactiveBayes/ExponentialFamilyManifolds.jl",
 )
 
 deploydocs(;
