@@ -17,10 +17,10 @@ makedocs(;
         canonical="https://ReactiveBayes.github.io/ExponentialFamilyManifolds.jl",
         edit_link="main",
         assets=String[],
+        repolink="github.com/ReactiveBayes/ExponentialFamilyManifolds.jl",
     ),
     pages=["Home" => "index.md"],
     clean=true,
-    repo="github.com/ReactiveBayes/ExponentialFamilyManifolds.jl",
 )
 
 deploydocs(;
