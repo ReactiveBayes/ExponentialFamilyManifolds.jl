@@ -5,7 +5,7 @@
 Get the natural manifold base for the `Chisq` distribution.
 """
 function get_natural_manifold_base(::Type{Chisq}, ::Tuple{}, conditioner=nothing)
-    return ShiftedPositiveNumbers(static(-1//2))
+    return ShiftedPositiveNumbers(static(-1))
 end
 
 """
