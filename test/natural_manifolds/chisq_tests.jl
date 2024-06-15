@@ -2,6 +2,6 @@
     include("natural_manifolds_setuptests.jl")
 
     test_natural_manifold() do rng
-        return Chisq(1 + 10rand(rng))
+        return Chisq(10rand(rng))
     end
 end
