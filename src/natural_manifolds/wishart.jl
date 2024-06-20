@@ -9,9 +9,9 @@ function get_natural_manifold_base(::Type{ExponentialFamily.WishartFast}, dims::
 end
 
 """
-    partition_point(::Type{Wishart}, ::Tuple{Int}, p, conditioner=nothing)
+    partition_point(::Type{WishartFast}, ::Tuple{Int}, p, conditioner=nothing)
 
-Converts the `point` to a compatible representation for the natural manifold of type `Wishart`.
+Converts the `point` to a compatible representation for the natural manifold of type `WishartFast`.
 """
 function partition_point(::Type{ExponentialFamily.WishartFast}, dims::Tuple{Int, Int}, p, conditioner=nothing)
     k = first(dims)
