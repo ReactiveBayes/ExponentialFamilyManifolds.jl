@@ -18,5 +18,6 @@ include("natural_manifolds/laplace.jl")
 include("natural_manifolds/lognormal.jl")
 include("natural_manifolds/normal.jl")
 include("natural_manifolds/pareto.jl")
+include("natural_manifolds/poisson.jl")
 
 end
