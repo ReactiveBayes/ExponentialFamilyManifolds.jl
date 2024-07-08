@@ -9,6 +9,7 @@ include("natural_manifolds.jl")
 
 include("natural_manifolds/bernoulli.jl")
 include("natural_manifolds/beta.jl")
+include("natural_manifolds/binomial.jl")
 include("natural_manifolds/chisq.jl")
 include("natural_manifolds/dirichlet.jl")
 include("natural_manifolds/exponential.jl")
