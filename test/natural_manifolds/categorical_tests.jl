@@ -25,12 +25,13 @@ end
     M = get_natural_manifold(T, dims, getconditioner(ef))
 
     function f(M, p)
-        return (mean(p) - 0.5)^2
+        ef = convert(ExponentialFamilyDistribution, M, p)
+        return (mean(ef) - 0.5)^2
     end
 
     function g(M, p)
-        X = ForwardDiff.gradient((p) -> f(M, p), p)
-        return project!(M, X, p, X)
+        ef = convert(ExponentialFamilyDistribution, M, p)
+        return project(M, p, 2 * (mean(ef) - 0.5) * p ./ 10)
     end
 
     q = gradient_descent(M, f, g, rand(rng, M))
