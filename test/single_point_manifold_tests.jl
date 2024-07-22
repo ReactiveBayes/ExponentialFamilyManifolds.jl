@@ -1,5 +1,5 @@
 @testitem "Generic properties of SinglePointManifold" begin
-    import ManifoldsBase: check_point, check_vector, representation_size, injectivity_radius, get_embedding, is_flat, inner, manifold_dimension
+    import ManifoldsBase: check_point, check_vector, embed, representation_size, injectivity_radius, get_embedding, is_flat, inner, manifold_dimension
     import ExponentialFamilyManifolds: SinglePointManifold
     using ManifoldsBase, Static, StaticArrays, JET, Manifolds
     using StableRNGs
@@ -50,6 +50,10 @@
 
         @test_opt inner(M, p, X, Y)
         @test_opt inner(M, p, 0, 0)
+
+        @test embed(M, p) == p
+        @test embed(M, p, 0) == 0
+        @test inner(M, p, 0, 0) == 0
     end
 
     vector_points = [[1], [1, 2], [1, 2, 3]]
