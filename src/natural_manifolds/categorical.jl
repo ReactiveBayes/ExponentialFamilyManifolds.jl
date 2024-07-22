@@ -17,5 +17,5 @@ Converts the `point` to a compatible representation for the natural manifold of 
 """
 function partition_point(::Type{Categorical}, ::Tuple{}, p, conditioner=nothing)
     # See comment in `get_natural_manifold_base` for `Categorical`
-    return ArrayPartition(p[1:end-1], p[end])
+    return ArrayPartition(p[1:end-1], p[end:end])
 end
