@@ -1,8 +1,3 @@
-using Test
-using ManifoldsBase
-using Random
-using StaticArrays
-
 @testitem "Generic properties of SinglePointManifold" begin
     import ManifoldsBase: check_point, check_vector, representation_size, injectivity_radius, get_embedding, is_flat, inner, manifold_dimension
     import ExponentialFamilyManifolds: SinglePointManifold
