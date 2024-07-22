@@ -3,6 +3,7 @@
     import ExponentialFamilyManifolds: SinglePointManifold
     using ManifoldsBase, Static, StaticArrays, JET, Manifolds
     using StableRNGs
+    using Random
 
     rng = StableRNG(42)
 
@@ -30,6 +31,7 @@
         @test @inferred(manifold_dimension(M)) === 0
         @test @inferred(is_flat(M)) === true
         @test injectivity_radius(M) ≈ 0
+        @test default_retraction_method(M) == ExponentialRetraction()
      
         @test_throws MethodError get_embedding(M)
 
@@ -67,5 +69,6 @@
         @test ManifoldsBase.log(M, p, p) == zero_vector(M, p)
         @test ManifoldsBase.project!(M, similar(X), p, similar(X)) == zero_vector(M, p)
         @test rand(rng, M) ∈ M
+        @test rand(M) ∈ M
     end
 end
