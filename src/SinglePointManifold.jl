@@ -66,3 +66,11 @@ end
 function ManifoldsBase.zero_vector!(::SinglePointManifold, X, p)
     return fill!(X, zero(eltype(X)))
 end
+
+function Random.rand(M::SinglePointManifold; kwargs...)
+    return rand(Random.default_rng(), M; kwargs...)
+end
+
+function Random.rand(rng::AbstractRNG, M::SinglePointManifold; kwargs...)
+    return M.point
+end

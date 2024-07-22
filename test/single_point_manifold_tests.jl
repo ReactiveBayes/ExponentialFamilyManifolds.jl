@@ -2,6 +2,10 @@
     import ManifoldsBase: check_point, check_vector, representation_size, injectivity_radius, get_embedding, is_flat, inner, manifold_dimension
     import ExponentialFamilyManifolds: SinglePointManifold
     using ManifoldsBase, Static, StaticArrays, JET, Manifolds
+    using StableRNGs
+
+    rng = StableRNG(42)
+
 
     points = [
         0,
@@ -58,5 +62,6 @@
         @test ManifoldsBase.log!(M, X, p, p) == zero_vector(M, p)
         @test ManifoldsBase.log(M, p, p) == zero_vector(M, p)
         @test ManifoldsBase.project!(M, similar(X), p, similar(X)) == zero_vector(M, p)
+        @test rand(rng, M) ∈ M
     end
 end
