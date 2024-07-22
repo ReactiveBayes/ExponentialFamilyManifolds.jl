@@ -34,6 +34,6 @@ end
     end
 
     q = gradient_descent(M, f, g, rand(rng, M))
-    @show is_point(M, q)
+    @test q ∈ M
     @test mean(q) ≈ 0.5 atol = 1e-1
 end
