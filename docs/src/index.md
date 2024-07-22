@@ -81,6 +81,7 @@ ExponentialFamilyManifolds.partition_point
 ExponentialFamilyManifolds.ShiftedPositiveNumbers
 ExponentialFamilyManifolds.ShiftedNegativeNumbers
 ExponentialFamilyManifolds.SymmetricNegativeDefinite
+ExponentialFamilyManifolds.SinglePointManifold
 ```
 
 ## Optimization example
