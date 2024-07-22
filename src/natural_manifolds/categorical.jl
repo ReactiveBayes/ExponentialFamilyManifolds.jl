@@ -5,7 +5,9 @@
 Get the natural manifold base for the `Categorical` distribution.
 """
 function get_natural_manifold_base(::Type{Categorical}, ::Tuple{}, conditioner=nothing)
-    return Euclidean(conditioner)
+    return ProductManifold(
+        Euclidean(conditioner-1), SinglePointManifold(0)
+    )
 end
 
 """
@@ -15,5 +17,5 @@ Converts the `point` to a compatible representation for the natural manifold of 
 """
 function partition_point(::Type{Categorical}, ::Tuple{}, p, conditioner=nothing)
     # See comment in `get_natural_manifold_base` for `Categorical`
-    return ArrayPartition(p)
+    return ArrayPartition(p[1:end-1], p[end])
 end
