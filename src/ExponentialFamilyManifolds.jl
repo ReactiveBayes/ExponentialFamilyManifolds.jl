@@ -5,7 +5,7 @@ using BayesBase, ExponentialFamily, ManifoldsBase, Manifolds, Random, LinearAlge
 include("symmetric_negative_definite.jl")
 include("shifted_negative_numbers.jl")
 include("shifted_positive_numbers.jl")
-include("SinglePointManifold.jl")
+include("single_point_manifold.jl")
 include("natural_manifolds.jl")
 
 include("natural_manifolds/bernoulli.jl")

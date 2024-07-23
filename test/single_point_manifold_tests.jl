@@ -72,3 +72,37 @@
         @test rand(M) ∈ M
     end
 end
+
+@testitem "Simple manifold optimization problem #1" begin
+    using Manopt, ForwardDiff, Static, StableRNGs, LinearAlgebra
+
+    import ExponentialFamilyManifolds: SinglePointManifold
+
+    for a in (2.0, 3.0),
+        b in (10.0, 5.0),
+        c in (1.0, 10.0, -1.0),
+        eps in (1e-4, 1e-5, 1e-8, 1e-10),
+        stepsize in (ConstantStepsize(0.1), ConstantStepsize(0.01), ConstantStepsize(0.001))
+
+        f(M, x) = (a .* x .^ 2 .+ b .* x .+ c)[1]
+        grad_f(M, x) = 2 .* a .* x .+ b
+
+        rng = StableRNG(42)
+
+        for s in [0, 0.0, 10]
+            M = SinglePointManifold(s)
+            p0 = rand(rng, M)
+
+            q1 = gradient_descent(
+                M,
+                f,
+                grad_f,
+                p0;
+                stepsize=stepsize,
+                stopping_criterion=StopAfterIteration(1)
+            )
+
+            @test q1 ≈ s
+        end
+    end
+end
