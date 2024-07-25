@@ -26,7 +26,7 @@ ManifoldsBase.injectivity_radius(M::SinglePointManifold) = zero(eltype(M.point))
 ManifoldsBase.default_retraction_method(::SinglePointManifold) = ExponentialRetraction()
 
 function ManifoldsBase.check_point(M::SinglePointManifold, p; kwargs...)
-    if p[1] != M.point
+    if !(p ≈ M.point)
         return DomainError(p, "The point $(p) does not lie on $(M), which contains only $(M.point).")
     end
     return nothing

@@ -26,12 +26,12 @@ end
 
     function f(M, p)
         ef = convert(ExponentialFamilyDistribution, M, p)
-        return (mean(ef) - 0.5)^2
+        η = getnaturalparameters(ef)
+        return (mean(η) - 0.5)^2
     end
 
     function g(M, p)
-        ef = convert(ExponentialFamilyDistribution, M, p)
-        return project(M, p, 2 * (mean(ef) - 0.5) * p ./ 10)
+        return project(M, p, 2 * p ./ 10)
     end
 
     q = gradient_descent(M, f, g, rand(rng, M))
