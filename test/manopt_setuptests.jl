@@ -16,7 +16,7 @@ function (sc::StopWhenGradientNormLessNonAllocating)(mp, s, i)
     return false
 end
 
-# Non allocating version of the same `ConstantStepsize` from `Manopt.jl`
+# Non allocating version of the same `ConstantLength` from `Manopt.jl`
 struct ConstantStepsizeNonAllocating{T} <: Stepsize
     stepsize::T
 end

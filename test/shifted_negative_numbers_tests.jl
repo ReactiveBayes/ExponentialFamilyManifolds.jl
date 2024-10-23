@@ -159,7 +159,7 @@ end
         b in (10.0, 5.0),
         c in (1.0, 10.0, -1.0),
         eps in (1e-4, 1e-5, 1e-8, 1e-10),
-        stepsize in (ConstantStepsize(0.1), ConstantStepsize(0.01), ConstantStepsize(0.001))
+        stepsize in (ConstantLength(0.1), ConstantLength(0.01), ConstantLength(0.001))
 
         expected_q = -b / 2a
         expected_minimum = c - b^2 / (4a)
@@ -232,11 +232,11 @@ end
         obj = ManifoldGradientObjective(missing, grad_f!; evaluation=InplaceEvaluation())
         dmp = DefaultManoptProblem(M, obj)
         s = GradientDescentState(
-            M,
-            q;
+            M;
+            p = q,
             stopping_criterion=StopWhenGradientNormLessNonAllocating(1e-8),
             stepsize=ConstantStepsizeNonAllocating(0.1),
-            direction=IdentityUpdateRule(),
+            direction=Manopt.IdentityUpdateRule(),
             retraction_method=default_retraction_method(M, typeof(q)),
             X=zero_vector(M, q),
         )

@@ -82,7 +82,7 @@ end
         b in (10.0, 5.0),
         c in (1.0, 10.0, -1.0),
         eps in (1e-4, 1e-5, 1e-8, 1e-10),
-        stepsize in (ConstantStepsize(0.1), ConstantStepsize(0.01), ConstantStepsize(0.001))
+        stepsize in (ConstantLength(0.1), ConstantLength(0.01), ConstantLength(0.001))
 
         f(M, x) = (a .* x .^ 2 .+ b .* x .+ c)[1]
         grad_f(M, x) = 2 .* a .* x .+ b

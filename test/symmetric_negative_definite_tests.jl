@@ -206,7 +206,7 @@ end
             f,
             g,
             p0;
-            stepsize=ConstantStepsize(stepsize),
+            stepsize=ConstantLength(stepsize),
             stopping_criterion=StopWhenGradientNormLess(eps),
         )
 
