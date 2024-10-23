@@ -25,6 +25,6 @@ end
         k = rand(rng, 1:10)
         m = randn(rng, k)
         γ = rand(rng)^2 + 1
-        return MvNormalMeanScalePrecision(m, C)
+        return MvNormalMeanScalePrecision(m, γ)
     end
 end
