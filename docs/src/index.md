@@ -148,6 +148,129 @@ using Test #hide
 kldivergence(convert(Distribution, q_ef), dist)
 ```
 
+## Advanced example
+
+```@docs
+forward_kl_objective
+reverse_kl_objective
+```
+
+This example demonstrates the difference between Forward and Reverse KL divergence when fitting a Gaussian to a multimodal target distribution.
+
+```@example kl_comparison
+using Distributions, LinearAlgebra, Random, Plots
+using ExponentialFamily, ExponentialFamilyManifolds
+using Manopt, ForwardDiff, StableRNGs
+
+# Create target distribution (mixture of 3 Gaussians in triangle formation)
+function create_target_distribution()
+    μ1 = [0.0, 0.0]    # First vertex
+    μ2 = [2.0, 0.0]    # Second vertex
+    μ3 = [1.0, 1.732]  # Third vertex (sqrt(3) ≈ 1.732)
+    Σ = 0.2 * Matrix(I, 2, 2)
+    w = fill(1/3, 3)   # Equal weights
+
+    MixtureModel([
+        MvNormal(μ1, Σ),
+        MvNormal(μ2, Σ),
+        MvNormal(μ3, Σ)
+    ], w)
+end
+
+target_dist = create_target_distribution()
+```
+
+First, let's visualize our target distribution:
+
+```@example kl_comparison
+x = range(-6, 6, length=100)
+y = range(-6, 6, length=100)
+z_target = [pdf(target_dist, [xi, yi]) for yi in y, xi in x]
+
+contour(x, y, z_target; 
+    fill=true, color=:viridis,
+    levels=15, title="Target Distribution",
+    xlabel="x₁", ylabel="x₂"
+)
+```
+
+Now we'll implement both Forward and Reverse KL objectives:
+
+```@example kl_comparison
+function forward_kl_objective(M, η, samples)
+    q = convert(ExponentialFamilyDistribution, M, η)
+    q_dist = convert(Distribution, q)
+    -sum(logpdf(q_dist, s) for s in eachcol(samples))
+end
+
+function reverse_kl_objective(M, η, target_dist; n_samples=2000)
+    q = convert(ExponentialFamilyDistribution, M, η)
+    q_dist = convert(Distribution, q)
+    
+    samples = rand(StableRNG(422), q_dist, n_samples)
+    log_ratios = [
+        logpdf(target_dist, samples[:, i]) - logpdf(q_dist, samples[:, i])
+        for i in 1:n_samples
+    ]
+    -mean(log_ratios)
+end
+```
+
+Let's optimize using both approaches:
+
+```@example kl_comparison
+function optimize_distribution(form, target_dist, η_init; method=:forward, max_iters=100)
+    M = ExponentialFamilyManifolds.get_natural_manifold(form, (2,))
+    stopping_criterion = StopAfterIteration(max_iters) | StopWhenGradientNormLess(1e-6)
+
+    if method == :forward
+        samples = rand(StableRNG(42), target_dist, 2000)
+        f(M, η) = forward_kl_objective(M, η, samples)
+    else
+        f(M, η) = reverse_kl_objective(M, η, target_dist)
+    end
+    
+    g(M, η) = ForwardDiff.gradient(x -> f(M, x), η)
+    
+    η_opt = gradient_descent(M, f, g, η_init; stopping_criterion=stopping_criterion)
+    convert(Distribution, convert(ExponentialFamilyDistribution, M, η_opt))
+end
+
+# Initialize and optimize
+form = MvNormalMeanCovariance
+η_init = ArrayPartition([0.4, 0.4], [-0.5 0.0; 0.0 -0.5])
+
+q_forward = optimize_distribution(form, target_dist, η_init; method=:forward)
+q_reverse = optimize_distribution(form, target_dist, η_init; method=:reverse)
+```
+
+Finally, let's compare the results:
+
+```@example kl_comparison
+function plot_fit(fitted_dist, target_dist, title)
+    z_fitted = [pdf(fitted_dist, [xi, yi]) for yi in y, xi in x]
+    
+    contour(x, y, z_target; 
+        fill=true, alpha=0.4, color=:viridis,
+        levels=15, title=title, xlabel="x₁", ylabel="x₂"
+    )
+    contour!(x, y, z_fitted; 
+        color=:red, fill=false, linewidth=2, levels=10
+    )
+end
+
+p1 = plot_fit(q_forward, target_dist, "Forward KL")
+p2 = plot_fit(q_reverse, target_dist, "Reverse KL")
+plot(p1, p2, layout=(1,2), size=(1000,400))
+```
+
+The KL divergences show the quantitative difference:
+
+```@example kl_comparison
+println("Forward KL: ", round(kldivergence(q_forward, target_dist), digits=3))
+println("Reverse KL: ", round(kldivergence(q_reverse, target_dist), digits=3))
+```
+
 # Helpers 
 
 ```@docs 
