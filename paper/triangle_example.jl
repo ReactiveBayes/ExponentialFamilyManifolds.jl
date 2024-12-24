@@ -1,6 +1,7 @@
 using Distributions, LinearAlgebra, Random, Plots, RecursiveArrayTools
 using ExponentialFamily, ExponentialFamilyManifolds
 using Manopt, ForwardDiff, StableRNGs
+using PGFPlotsX
 
 """
     Two intersecting Gaussians blobs with different means and covariances.
@@ -120,4 +121,7 @@ function plot_comparison(q1, q2, target_dist, title_q1, title_q2)
 end
 
 plot_comparison(q_maximum_likelihood, q_full, target_dist, "Maximum likelihood", "Free Energy")
-plot_comparison(q_fe_diag, q_full, target_dist, "Isotropic gaussian", "Gaussian")
+savefig("mle_vs_vi.pdf")
+
+plot_comparison(q_fe_diag, q_full, target_dist, "Isotropic gaussian", "Gaussian") 
+savefig("full_vs_isotropic.pdf")
