@@ -89,9 +89,6 @@ function run_maximum_likelihood(form, samples, η_init; max_iters=500)
 end
 
 
-############################################################################
-# 5) Example usage
-############################################################################
 form = MvNormalMeanCovariance
 η_init = ArrayPartition([0.4, 0.4], [-0.5 0.0; 0.0 -0.5])
 target_dist = create_target_distribution()
