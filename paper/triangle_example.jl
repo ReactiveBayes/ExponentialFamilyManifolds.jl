@@ -1,7 +1,6 @@
 using Distributions, LinearAlgebra, Random, Plots, RecursiveArrayTools
 using ExponentialFamily, ExponentialFamilyManifolds
 using Manopt, ForwardDiff, StableRNGs
-using Statistics
 
 """
     Two intersecting Gaussians blobs with different means and covariances.

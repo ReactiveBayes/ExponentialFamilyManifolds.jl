@@ -3,4 +3,5 @@
 *.jl.mem
 /Manifest.toml
 /docs/Manifest.toml
+/paper/Manifest.toml
 /docs/build/
