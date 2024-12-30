@@ -119,11 +119,13 @@ end
 The \code{optimize} (the Listing \ref{lst:generic_opt}) function demonstrates how gradient descent can be implemented using the \code{NaturalParametersManifold} interface. Additionally, it can be easily adapted to use the natural gradient \cite{amari_natural_1998} by incorporating the Fisher information into the gradient computations, as shown in Listing~\ref{lst:natgrad}. This flexibility allows researchers to perform natural MLE or natural VI by simply reusing the objective functions.
 
 \begin{lstlisting}[language=Julia, label={lst:natgrad}, caption={Implementing the natural gradient}]
-g(M, η) = (M, η) -> begin
+function natural_gradient(M, η, f)
+    q = convert(EFD, M, η)
+    F = fisherinformation(q)
     grad = ForwardDiff.gradient(
-            η -> f(M, η), η
+        x -> f(M, x), η
     )
-    fisherinformation(M, η) \ grad
+    return F \ grad
 end
 \end{lstlisting}
 
