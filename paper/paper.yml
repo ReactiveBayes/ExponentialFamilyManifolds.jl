@@ -1,21 +1,30 @@
-title: "My JuliaCon proceeding"
+title: "ExponentialFamilyManifolds.jl: Representing exponential families as Riemannian manifolds"
 keywords:
+  - Exponential Family
   - Julia
+  - Manifold Optimization
   - Optimization
-  - Game theory
-  - Compiler
+  - Probability Distributions
 authors:
-  - name: 1st author
-    orcid: 0000-0003-1361-440X
+  - name: Mykola Lukashchuk
+    orcid: 0009-0003-3011-0825
     affiliation: 1
-  - name: 2nd author
-    affiliation: 1, 2
-  - name: 3rd author
+  - name: Dmitry Bagaev
+    orcid: 0000-0001-9655-7986
+    affiliation: 1
+  - name: Albert Podusenko
+    orcid: 0000-0002-8768-9765
     affiliation: 2
+  - name: İsmail Şenöz
+    orcid: 0000-0001-7355-2138
+    affiliation: 2
+  - name: Bert de Vries
+    orcid: 0000-0003-0839-174X
+    affiliation: 1
 affiliations:
-  - name: University
+  - name: Department of Electrical Engineering, Eindhoven University of Technology
     index: 1
-  - name: National Lab
+  - name: Lazy Dynamics BV, Eindhoven
     index: 2
-date: 24 April 2019
+date: 30 December 2024
 bibliography: ref.bib
