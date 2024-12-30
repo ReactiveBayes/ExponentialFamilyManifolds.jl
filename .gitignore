@@ -4,5 +4,5 @@
 /Manifest.toml
 /docs/Manifest.toml
 /paper/Manifest.toml
-paper/*.pdf
+paper_example/*.pdf
 /docs/build/

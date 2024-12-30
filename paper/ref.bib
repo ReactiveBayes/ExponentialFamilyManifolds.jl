@@ -1,0 +1,93 @@
+@article{bezanson2017julia,
+  title={Julia: A fresh approach to numerical computing},
+  author={Bezanson, Jeff and Edelman, Alan and Karpinski, Stefan and Shah, Viral B},
+  doi={10.1137/141000671},
+  journal={SIAM review},
+  volume={59},
+  number={1},
+  pages={65--98},
+  year={2017},
+  publisher={SIAM}
+}
+
+@software{Senoz_ExponentialFamily_jl_2023,
+author = {Şenöz, İsmail and Bagaev, Dmitry and Lukashchuk, Mykola},
+license = {MIT},
+month = oct,
+title = {{ExponentialFamily.jl}},
+url = {https://github.com/ReactiveBayes/ExponentialFamily.jl},
+version = {1.6.0},
+year = {2023}
+}
+
+@article{axen_manifoldsjl_2023,
+	title = {Manifolds.{Jl}: {An} {Extensible} {Julia} {Framework} for {Data} {Analysis} on {Manifolds}},
+	volume = {49},
+	doi = {10.1145/3618296},
+	number = {4},
+	journal = {ACM Transactions on Mathematical Software},
+	author = {Axen, Seth D. and Baran, Mateusz and Bergmann, Ronny and Rzecki, Krzysztof},
+	month = dec,
+	year = {2023},
+}
+
+
+@article{bergmann_manoptjl_2022,
+	title = {Manopt.jl: {Optimization} on {Manifolds} in {Julia}},
+	volume = {7},
+	doi = {10.21105/joss.03866},
+	number = {70},
+	journal = {Journal of Open Source Software},
+	author = {Bergmann, Ronny},
+	year = {2022},
+	note = {Publisher: The Open Journal},
+	pages = {3866},
+}
+
+@article{revels_forward-mode_2016,
+	title = {Forward-{Mode} {Automatic} {Differentiation} in {Julia}},
+	url = {http://arxiv.org/abs/1607.07892},
+	abstract = {We present ForwardDiff, a Julia package for forward-mode automatic differentiation (AD) featuring performance competitive with low-level languages like C++. Unlike recently developed AD tools in other popular high-level languages such as Python and MATLAB, ForwardDiff takes advantage of just-in-time (JIT) compilation to transparently recompile AD-unaware user code, enabling efficient support for higher-order differentiation and differentiation using custom number types (including complex numbers). For gradient and Jacobian calculations, ForwardDiff provides a variant of vector-forward mode that avoids expensive heap allocation and makes better use of memory bandwidth than traditional vector mode. In our numerical experiments, we demonstrate that for nontrivially large dimensions, ForwardDiff's gradient computations can be faster than a reverse-mode implementation from the Python-based autograd package. We also illustrate how ForwardDiff is used effectively within JuMP, a modeling language for optimization. According to our usage statistics, 41 unique repositories on GitHub depend on ForwardDiff, with users from diverse fields such as astronomy, optimization, finite element analysis, and statistics. This document is an extended abstract that has been accepted for presentation at the AD2016 7th International Conference on Algorithmic Differentiation.},
+	urldate = {2018-07-22},
+	journal = {arXiv:1607.07892 [cs]},
+	author = {Revels, Jarrett and Lubin, Miles and Papamarkou, Theodore},
+	month = jul,
+	year = {2016},
+	note = {arXiv: 1607.07892},
+	keywords = {Computer Science - Mathematical Software},
+}
+
+@article{amari_natural_1998,
+	title = {Natural {Gradient} {Works} {Efficiently} in {Learning}},
+	volume = {10},
+	issn = {0899-7667},
+	url = {https://doi.org/10.1162/089976698300017746},
+	doi = {10.1162/089976698300017746},
+	abstract = {When a parameter space has a certain underlying structure, the ordinary gradient of a function does not represent its steepest direction, but the natural gradient does. Information geometry is used for calculating the natural gradients in the parameter space of perceptrons, the space of ma-trices (for blind source separation), and the space of linear dynamical systems (for blind source deconvolution). The dynamical behavior of natural gradient online learning is analyzed and is proved to be Fisher efficient, implying that it has asymptotically the same performance as the optimal batch estimation of parameters. This suggests that the plateau phenomenon, which appears in the backpropagation learning algorithm of multilayer perceptrons, might disappear or might not be so serious when the natural gradient is used. An adaptive method of updating the learning rate is proposed and analyzed.},
+	number = {2},
+	journal = {Neural Computation},
+	author = {Amari, Shun-ichi},
+	month = jan,
+	year = {1998},
+	pages = {251--276},
+}
+
+@article{blei_variational_2017,
+	title = {Variational {Inference}: {A} {Review} for {Statisticians}},
+	volume = {112},
+	issn = {0162-1459},
+	shorttitle = {Variational {Inference}},
+	url = {https://doi.org/10.1080/01621459.2017.1285773},
+	doi = {10.1080/01621459.2017.1285773},
+	abstract = {One of the core problems of modern statistics is to approximate difficult-to-compute probability densities. This problem is especially important in Bayesian statistics, which frames all inference about unknown quantities as a calculation involving the posterior density. In this article, we review variational inference (VI), a method from machine learning that approximates probability densities through optimization. VI has been used in many applications and tends to be faster than classical methods, such as Markov chain Monte Carlo sampling. The idea behind VI is to first posit a family of densities and then to find a member of that family which is close to the target density. Closeness is measured by Kullback–Leibler divergence. We review the ideas behind mean-field variational inference, discuss the special case of VI applied to exponential family models, present a full example with a Bayesian mixture of Gaussians, and derive a variant that uses stochastic optimization to scale up to massive data. We discuss modern research in VI and highlight important open problems. VI is powerful, but it is not yet well understood. Our hope in writing this article is to catalyze statistical research on this class of algorithms. Supplementary materials for this article are available online.},
+	number = {518},
+	urldate = {2024-11-13},
+	journal = {Journal of the American Statistical Association},
+	author = {Blei, David M. and Kucukelbir, Alp and McAuliffe, Jon D.},
+	month = apr,
+	year = {2017},
+	note = {Publisher: ASA Website
+\_eprint: https://doi.org/10.1080/01621459.2017.1285773},
+	keywords = {Algorithms, Computationally intensive methods, Statistical computing},
+	pages = {859--877},
+}
