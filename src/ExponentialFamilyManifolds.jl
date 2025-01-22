@@ -27,4 +27,7 @@ include("natural_manifolds/poisson.jl")
 include("natural_manifolds/rayleigh.jl")
 include("natural_manifolds/weibull.jl")
 include("natural_manifolds/wishart.jl")
+# normal gamma
+include("normal_gamma/partial.jl")
+include("normal_gamma/natural.jl")
 end
