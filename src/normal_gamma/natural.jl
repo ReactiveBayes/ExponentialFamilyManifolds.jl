@@ -111,3 +111,33 @@ function inner(::NormalGammaNaturalManifold, p, X, Y)
     G = fisherinformation(ef)
     return dot(X, G, Y)
 end
+
+function Random.rand(M::NormalGammaNaturalManifold; kwargs...)
+    return rand(Random.default_rng(), M; kwargs...)
+end
+
+function Random.rand(rng::AbstractRNG, M::NormalGammaNaturalManifold; kwargs...)
+    μ = rand(Euclidean())[1]
+    λ = rand(PositiveNumbers())
+    α = rand(PositiveNumbers())
+    β = rand(PositiveNumbers())
+    return collect(MeanToNatural(NormalGamma)((μ, λ, α, β)))
+end
+
+function Random.rand!(rng::AbstractRNG, M::NormalGammaNaturalManifold, η; kwargs...)
+    μ = rand(rng, Euclidean())[1]
+    λ = rand(rng, PositiveNumbers())
+    α = rand(rng, PositiveNumbers()) 
+    β = rand(rng, PositiveNumbers())
+
+    η_nat = MeanToNatural(NormalGamma)((μ, λ, α, β))
+    η .= η_nat
+    return η
+end
+
+import ManifoldsBase: project!
+ 
+function ManifoldsBase.project!(M::NormalGammaNaturalManifold, Y, p, X)
+    Y .= X
+    return Y
+end

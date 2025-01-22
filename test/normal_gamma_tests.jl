@@ -104,6 +104,11 @@ end
     
     @test @eval(@allocated(manifold_dimension($M))) === 0
     @test @eval(@allocated(representation_size($M))) === 0
+
+    @test check_point(M, rand(M)) === nothing
+    px = zeros(4)
+    rand!(M, px)
+    @test check_point(M, px) === nothing
 end
 
 @testitem "Simple manifold optimization problem #1" begin
