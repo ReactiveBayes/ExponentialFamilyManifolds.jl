@@ -30,4 +30,5 @@ include("natural_manifolds/wishart.jl")
 # normal gamma
 include("normal_gamma/partial.jl")
 include("normal_gamma/natural.jl")
+include("natural_manifolds/normal_gamma.jl")
 end
