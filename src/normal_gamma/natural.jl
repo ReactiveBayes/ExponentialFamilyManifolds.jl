@@ -1,5 +1,6 @@
 using ExponentialFamily
 using FastCholesky
+using Distributions
 using LinearAlgebra
 
 import ManifoldsBase: check_point, check_vector, manifold_dimension, representation_size, exp!, is_point, is_vector
@@ -117,19 +118,21 @@ function Random.rand(M::NormalGammaNaturalManifold; kwargs...)
 end
 
 function Random.rand(rng::AbstractRNG, M::NormalGammaNaturalManifold; kwargs...)
-    μ = rand(Euclidean())[1]
-    λ = rand(PositiveNumbers())
-    α = rand(PositiveNumbers())
-    β = rand(PositiveNumbers())
-    return collect(MeanToNatural(NormalGamma)((μ, λ, α, β)))
+    # e.g. draw (μ,λ,α,β) from some easy distributions:
+    μ = rand(rng, Normal(0,1))
+    λ = rand(rng, Exponential(1)) + 0.001 # ensure positivity
+    α = rand(rng, Exponential(1)) + 0.001  # ensure positivity
+    β = rand(rng, Exponential(1)) + 0.001  # ensure positivity
+    # Then transform to natural coords:
+    η = MeanToNatural(NormalGamma)((μ, λ, α, β))
+    return collect(η)
 end
 
 function Random.rand!(rng::AbstractRNG, M::NormalGammaNaturalManifold, η; kwargs...)
-    μ = rand(rng, Euclidean())[1]
-    λ = rand(rng, PositiveNumbers())
-    α = rand(rng, PositiveNumbers()) 
-    β = rand(rng, PositiveNumbers())
-
+    μ = rand(rng, Normal(0,1))
+    λ = rand(rng, Exponential(1)) + 0.001 # ensure positivity
+    α = rand(rng, Exponential(1)) + 0.001  # ensure positivity
+    β = rand(rng, Exponential(1)) + 0.001  # ensure positivity
     η_nat = MeanToNatural(NormalGamma)((μ, λ, α, β))
     η .= η_nat
     return η

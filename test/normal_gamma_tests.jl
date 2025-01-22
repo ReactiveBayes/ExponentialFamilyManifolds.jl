@@ -159,3 +159,35 @@ end
     final_grad = grad_f(M, p_opt)
     @test norm(final_grad) < 1e-5
 end
+
+@testitem "Manifolds.test_manifold" begin
+    using Manifolds, Static, Random
+    using StableRNGs
+
+    import ExponentialFamilyManifolds: NormalGammaNaturalManifold
+
+    M = NormalGammaNaturalManifold()
+    rng = StableRNG(42)
+
+    ptss = [
+        [
+            rand(rng, M),
+            rand(rng, M),
+            rand(rng, M),
+        ]
+    ]
+
+    for pts in ptss
+        Manifolds.test_manifold(
+            M,
+            pts;
+            test_exp_log=false,
+            inverse_retraction_methods=[],  # no inverse retraction
+            retraction_methods=[ExponentialRetraction()],
+            test_rand_point=true,
+            test_rand_tvector=false,
+            parallel_transport=false,
+            default_inverse_retraction_method=nothing,
+        )
+    end
+end
