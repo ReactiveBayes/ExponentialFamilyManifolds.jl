@@ -61,7 +61,9 @@ function exp_secondorder(
 4D manifold for NormalGamma in natural params η = (η1, η2, η3, η4).
 Domain constraints, etc. 
 """
-struct NormalGammaNaturalManifold <: AbstractManifold{ℝ} end
+struct NormalGammaNaturalManifold <: AbstractManifold{ℝ}
+    ensure_positivity_shift::Real = 0.1
+end
 
 function manifold_dimension(::NormalGammaNaturalManifold)
     return 4
@@ -120,9 +122,9 @@ end
 function Random.rand(rng::AbstractRNG, M::NormalGammaNaturalManifold; kwargs...)
     # e.g. draw (μ,λ,α,β) from some easy distributions:
     μ = rand(rng, Normal(0,1))
-    λ = rand(rng, Exponential(1)) + 0.001 # ensure positivity
-    α = rand(rng, Exponential(1)) + 0.001  # ensure positivity
-    β = rand(rng, Exponential(1)) + 0.001  # ensure positivity
+    λ = rand(rng, Exponential(1)) + M.ensure_positivity_shift
+    α = rand(rng, Exponential(1)) + M.ensure_positivity_shift
+    β = rand(rng, Exponential(1)) + M.ensure_positivity_shift
     # Then transform to natural coords:
     η = MeanToNatural(NormalGamma)((μ, λ, α, β))
     return collect(η)
@@ -130,9 +132,9 @@ end
 
 function Random.rand!(rng::AbstractRNG, M::NormalGammaNaturalManifold, η; kwargs...)
     μ = rand(rng, Normal(0,1))
-    λ = rand(rng, Exponential(1)) + 0.001 # ensure positivity
-    α = rand(rng, Exponential(1)) + 0.001  # ensure positivity
-    β = rand(rng, Exponential(1)) + 0.001  # ensure positivity
+    λ = rand(rng, Exponential(1)) + M.ensure_positivity_shift
+    α = rand(rng, Exponential(1)) + M.ensure_positivity_shift
+    β = rand(rng, Exponential(1)) + M.ensure_positivity_shift
     η_nat = MeanToNatural(NormalGamma)((μ, λ, α, β))
     η .= η_nat
     return η
