@@ -190,4 +190,8 @@ end
             default_inverse_retraction_method=nothing,
         )
     end
+
+    point = rand(M)
+    vector = rand(rng, 4)
+    @test isapprox(vector, project(M, point, vector))
 end
