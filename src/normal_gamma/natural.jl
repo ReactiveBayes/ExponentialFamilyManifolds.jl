@@ -34,8 +34,9 @@ end
 """
     NormalGammaNaturalManifold <: AbstractManifold{ℝ}
 
-4D manifold for NormalGamma in natural params η = (η1, η2, η3, η4).
-Domain constraints, etc. 
+4D manifold for NormalGamma in natural params η = (η1, η2, η3, η4) with fisher information metric.
+
+(see ExponentialFamily.jl/src/normal_gamma.jl)
 """
 struct NormalGammaNaturalManifold{ℝ, T, B} <: AbstractManifold{ℝ}
     ensure_positivity_shift::T
@@ -142,7 +143,7 @@ end
 
 import ManifoldsBase: project!
  
-function ManifoldsBase.project!(M::NormalGammaNaturalManifold, Y, p, X)
+function ManifoldsBase.project!(::NormalGammaNaturalManifold, Y, p, X)
     Y .= X
     return Y
 end
