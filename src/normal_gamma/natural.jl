@@ -46,7 +46,7 @@ To ensure valid sampling, the natural parameters are shifted by a small positive
 - `ensure_positivity_shift::T`: Small positive number used to shift parameters during sampling
 - `basis::B`: Score basis used for computing the Fisher information metric
 
-See also [`ExponentialFamily.NormalGamma`](@ref) for details about the Normal-Gamma distribution implementation.
+See also [`ExponentialFamily.NormalGamma`](https://reactivebayes.github.io/ExponentialFamily.jl/stable/library/#ExponentialFamily.NormalGamma) for details about the Normal-Gamma distribution implementation.
 """
 struct NormalGammaNaturalManifold{ℝ, T, B} <: AbstractManifold{ℝ}
     ensure_positivity_shift::T
