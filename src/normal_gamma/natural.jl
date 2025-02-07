@@ -7,53 +7,29 @@ import ManifoldsBase: check_point, check_vector, manifold_dimension, representat
 import ManifoldsBase: zero_vector, zero_vector!, default_retraction_method
 import ManifoldsBase: ExponentialRetraction
 import ManifoldsBase: injectivity_radius
-
-"""
-Compute all Christoffel symbols Γ^k_{i j}(x).
-Returns a 4×4×4 array: Gamma[k,i,j].
-"""
-function christoffel(::Type{NormalGamma}, ::NaturalParametersSpace, η)
-    ef = ExponentialFamilyDistribution(NormalGamma, η, nothing)
-    G = fisherinformation(ef)
-    G⁻¹ = cholinv(G)
-    dG  = partial_metric(NormalGamma, NaturalParametersSpace(), η) 
-    # formula: Γ^k_{i,j} = 1/2 * sum_{ℓ} g^{kℓ} ( ∂i g_{ℓj} + ∂j g_{ℓi} - ∂ℓ g_{i j} )
-    Γ = zeros(4,4,4)
-    for k in 1:4
-        for i in 1:4
-            for j in 1:4
-                s = 0.0
-                for ℓ in 1:4
-                    s += G⁻¹[k,ℓ] * (dG[ℓ,j,i] + dG[ℓ,i,j] - dG[i,j,ℓ])
-                end
-                Γ[k,i,j] = 0.5 * s
-            end
-        end
-    end
-    return Γ
-end
+import ManifoldsBase: AbstractBasis
+import ManifoldsBase: VectorSpaceType, TangentSpaceType
+import Manifolds: christoffel_symbols_second
 
 function exp_secondorder(
     ::Type{NormalGamma},
     ::NaturalParametersSpace,
+    Γ,
     p0,
     v0
- )
-    Γ = christoffel(NormalGamma, NaturalParametersSpace(), p0)
-    
-    Δ = zeros(4)
-    for k in 1:4
-        for i in 1:4
-            for j in 1:4
-                Δ[k] += Γ[k,i,j] * v0[i] * v0[j]
-            end
-        end
-        Δ[k] *= -0.5
-    end
-    
+)   
+    Δ = similar(p0)  # Preallocate Δ with same type/size as p0
+    Manifolds.@einsum Δ[k] = -0.5 * Γ[k,i,j] * v0[i] * v0[j]
     return p0 + v0 + Δ
- end
+end
 
+struct ScoreBasis{ℝ,VST<:VectorSpaceType} <: AbstractBasis{ℝ,VST}
+    vector_space::VST
+end
+
+function ScoreBasis(vst::VST) where {VST<:VectorSpaceType}
+    return ScoreBasis{ℝ,VST}(vst)
+end
 
 """
     NormalGammaNaturalManifold <: AbstractManifold{ℝ}
@@ -61,8 +37,31 @@ function exp_secondorder(
 4D manifold for NormalGamma in natural params η = (η1, η2, η3, η4).
 Domain constraints, etc. 
 """
-struct NormalGammaNaturalManifold <: AbstractManifold{ℝ}
-    ensure_positivity_shift::Real = 0.1
+struct NormalGammaNaturalManifold{ℝ, T, B} <: AbstractManifold{ℝ}
+    ensure_positivity_shift::T
+    basis::B
+end
+
+function NormalGammaNaturalManifold()
+    return NormalGammaNaturalManifold{ℝ, Float64, ScoreBasis{ℝ, TangentSpaceType}}(0.1, ScoreBasis(TangentSpaceType()))
+end
+
+function Manifolds.local_metric(
+    ::NormalGammaNaturalManifold,
+    p,
+    ::ScoreBasis{ℝ, TangentSpaceType}
+)
+    ef = ExponentialFamilyDistribution(NormalGamma, p, nothing)
+    return fisherinformation(ef)
+end
+
+function Manifolds.local_metric_jacobian(
+    M::NormalGammaNaturalManifold,
+    p,
+    ::ScoreBasis{ℝ, TangentSpaceType};
+    kwargs...
+)
+    return partial_metric(NormalGamma, NaturalParametersSpace(), p)
 end
 
 function manifold_dimension(::NormalGammaNaturalManifold)
@@ -88,8 +87,9 @@ function check_vector(::NormalGammaNaturalManifold, η, X)
     return nothing
 end
 
-function exp!(::NormalGammaNaturalManifold, η_out::AbstractVector, η_in::AbstractVector, X_in::AbstractVector, t::Real=1.0)
-    η_out .= exp_secondorder(NormalGamma, NaturalParametersSpace(), η_in, t.*X_in)
+function exp!(M::NormalGammaNaturalManifold, η_out::AbstractVector, η_in::AbstractVector, X_in::AbstractVector, t::Real=1.0)
+    Γ = christoffel_symbols_second(M, η_in, M.basis)
+    η_out .= exp_secondorder(NormalGamma, NaturalParametersSpace(), Γ, η_in, t.*X_in)
     return η_out
 end
 
