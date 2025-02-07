@@ -32,11 +32,21 @@ function ScoreBasis(vst::VST) where {VST<:VectorSpaceType}
 end
 
 """
-    NormalGammaNaturalManifold <: AbstractManifold{ℝ}
+    NormalGammaNaturalManifold{ℝ, T, B} <: AbstractManifold{ℝ}
 
-4D manifold for NormalGamma in natural params η = (η1, η2, η3, η4) with fisher information metric.
+A 4-dimensional manifold representing the natural parameter space of the Normal-Gamma distribution.
 
-(see ExponentialFamily.jl/src/normal_gamma.jl)
+The manifold is parameterized by natural parameters η = (η₁, η₂, η₃, η₄) and equipped with the Fisher information metric.
+The metric is computed in the score basis, which is defined as derivatives of the score vector with respect to the
+natural parameters (see [An elementary introduction to information geometry](https://arxiv.org/pdf/1808.08271), equation 79).
+
+To ensure valid sampling, the natural parameters are shifted by a small positive number to maintain positivity constraints.
+
+# Fields
+- `ensure_positivity_shift::T`: Small positive number used to shift parameters during sampling
+- `basis::B`: Score basis used for computing the Fisher information metric
+
+See also [`ExponentialFamily.NormalGamma`](@ref) for details about the Normal-Gamma distribution implementation.
 """
 struct NormalGammaNaturalManifold{ℝ, T, B} <: AbstractManifold{ℝ}
     ensure_positivity_shift::T
