@@ -216,3 +216,22 @@ end
         @test norm(M, q1, g(M, q1)) <= eps
     end
 end
+
+@testitem "Retraction methods consistency" begin
+    using ManifoldsBase, Random, LinearAlgebra
+    import ExponentialFamilyManifolds: SymmetricNegativeDefinite
+
+    rng = Random.default_rng()
+    M = SymmetricNegativeDefinite(2)
+    p = rand(rng, M)
+    X = randn(rng, 2, 2)
+    X = (X + X')/2  # Make symmetric
+    
+    q1 = similar(p)
+    q2 = similar(p)
+    
+    # Test that retract! is equivalent to retract_fused! with t=1
+    retract!(M, q1, p, X, ExponentialRetraction())
+    ManifoldsBase.retract_fused!(M, q2, p, X, 1.0, ExponentialRetraction())
+    @test q1 ≈ q2
+end
