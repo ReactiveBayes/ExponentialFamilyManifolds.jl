@@ -1,4 +1,3 @@
-
 """
     ShiftedPositiveNumbers(shift)
 
@@ -56,14 +55,20 @@ function ManifoldsBase.inner(M::ShiftedPositiveNumbers, p, X, Y)
     )
 end
 
-function ManifoldsBase.exp!(M::ShiftedPositiveNumbers, q, p, X, t::Number=1)
+function ManifoldsBase.exp_fused!(M::ShiftedPositiveNumbers, q, p, X, t::Number)
     @inbounds q[1] = shift(
         M,
         ManifoldsBase.exp(
-            PositiveNumbers(), unshift(M, @inbounds(p[1])), @inbounds(X[1]), t
+            PositiveNumbers(), 
+            unshift(M, @inbounds(p[1])), 
+            @inbounds(X[1]) * t  # Scale the tangent vector by t
         ),
     )
     return q
+end
+
+function ManifoldsBase.exp!(M::ShiftedPositiveNumbers, q, p, X)
+    return ManifoldsBase.exp_fused!(M, q, p, X, one(eltype(p)))
 end
 
 function ManifoldsBase.log!(M::ShiftedPositiveNumbers, X, p, q)
@@ -82,10 +87,14 @@ end
 
 ManifoldsBase.default_retraction_method(::ShiftedPositiveNumbers) = ExponentialRetraction()
 
-function ManifoldsBase.retract!(
+function ManifoldsBase.retract_fused!(
     M::ShiftedPositiveNumbers, q, p, X, t::Number, ::ExponentialRetraction
 )
-    return ManifoldsBase.exp!(M, q, p, X, t)
+    return ManifoldsBase.exp_fused!(M, q, p, X, t)
+end
+
+function ManifoldsBase.retract!(M::ShiftedPositiveNumbers, q, p, X, ::ExponentialRetraction)
+    return ManifoldsBase.retract_fused!(M, q, p, X, one(eltype(p)), ExponentialRetraction())
 end
 
 function ManifoldsBase.parallel_transport_to!(M::ShiftedPositiveNumbers, Y, p, X, q)
