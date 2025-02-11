@@ -264,3 +264,21 @@ end
     @test f(M, q1)[1] ≈ expected_minimum rtol = 1e-6
     @test norm(M, f(M, q1), grad_f(M, q1)) <= 1e-8
 end
+
+@testitem "Retraction methods consistency" begin
+    using ManifoldsBase, Random
+    import ExponentialFamilyManifolds: ShiftedPositiveNumbers
+
+    rng = Random.default_rng()
+    M = ShiftedPositiveNumbers(0.0)
+    p = rand(rng, M)
+    X = randn(rng, 1)
+    
+    q1 = similar(p)
+    q2 = similar(p)
+    
+    # Test that retract! is equivalent to retract_fused! with t=1
+    retract!(M, q1, p, X, ExponentialRetraction())
+    ManifoldsBase.retract_fused!(M, q2, p, X, 1.0, ExponentialRetraction())
+    @test q1 ≈ q2
+end

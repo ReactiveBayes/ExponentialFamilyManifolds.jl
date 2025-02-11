@@ -1,4 +1,3 @@
-
 """
     SymmetricNegativeDefinite(k)
 
@@ -66,9 +65,13 @@ function ManifoldsBase.inner(M::SymmetricNegativeDefinite, p, X, Y)
     return ManifoldsBase.inner(M.base, Negated(p), Negated(X), Negated(Y))
 end
 
-function ManifoldsBase.exp!(M::SymmetricNegativeDefinite, q, p, X, t::Number=1)
-    ManifoldsBase.exp!(M.base, q, Negated(p), Negated(X), t)
+function ManifoldsBase.exp_fused!(M::SymmetricNegativeDefinite, q, p, X, t::Number)
+    ManifoldsBase.exp_fused!(M.base, q, Negated(p), Negated(X), t)
     return negate!(q)
+end
+
+function ManifoldsBase.exp!(M::SymmetricNegativeDefinite, q, p, X)
+    return ManifoldsBase.exp_fused!(M, q, p, X, one(eltype(p)))
 end
 
 function ManifoldsBase.log!(M::SymmetricNegativeDefinite, X, p, q)
@@ -85,10 +88,14 @@ function ManifoldsBase.default_retraction_method(::SymmetricNegativeDefinite)
     return ExponentialRetraction()
 end
 
-function ManifoldsBase.retract!(
+function ManifoldsBase.retract_fused!(
     M::SymmetricNegativeDefinite, q, p, X, t::Number, ::ExponentialRetraction
 )
-    return ManifoldsBase.exp!(M, q, p, X, t)
+    return ManifoldsBase.exp_fused!(M, q, p, X, t)
+end
+
+function ManifoldsBase.retract!(M::SymmetricNegativeDefinite, q, p, X, ::ExponentialRetraction)
+    return ManifoldsBase.retract_fused!(M, q, p, X, one(eltype(p)), ExponentialRetraction())
 end
 
 function ManifoldsBase.parallel_transport_to!(M::SymmetricNegativeDefinite, Y, p, X, q)
