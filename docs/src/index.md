@@ -82,6 +82,7 @@ ExponentialFamilyManifolds.ShiftedPositiveNumbers
 ExponentialFamilyManifolds.ShiftedNegativeNumbers
 ExponentialFamilyManifolds.SymmetricNegativeDefinite
 ExponentialFamilyManifolds.SinglePointManifold
+ExponentialFamilyManifolds.NormalGammaNaturalManifold
 ```
 
 ## Optimization example
