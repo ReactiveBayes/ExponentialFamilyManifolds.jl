@@ -18,3 +18,13 @@ Converts the `point` to a compatible representation for the natural manifold of 
 function partition_point(::Type{Categorical}, ::Tuple{}, p, conditioner=nothing)
     return ArrayPartition(view(p, 1:conditioner-1), view(p, conditioner:conditioner))
 end
+
+"""
+    transform_back!(p, ::NaturalParametersManifold{Categorical}, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `Categorical`.
+"""
+function transform_back!(p, ::NaturalParametersManifold{ℝ, Categorical}, q)
+    p .= q
+    return p
+end

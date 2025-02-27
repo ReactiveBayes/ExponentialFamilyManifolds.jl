@@ -84,8 +84,8 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `T`.
 """
-function transform_back!(_, ::NaturalParametersManifold, q)
-    error("You need to implement this function for your specific 'T' of the exponential family distribution")
+function transform_back!(_, ::NaturalParametersManifold{𝔽,T}, q) where {𝔽,T}
+    error("You need to implement `transform_back!` for your specific $T of the exponential family distribution")
 end
 
 function Base.convert(

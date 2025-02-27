@@ -17,7 +17,12 @@ function partition_point(::Type{Rayleigh}, ::Tuple{}, p, conditioner=nothing)
     return -p
 end
 
-function transform_back!(p, ::NaturalParametersManifold{Rayleigh}, q)
+"""
+    transform_back!(p, ::NaturalParametersManifold{Rayleigh}, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `Rayleigh`.
+"""
+function transform_back!(p, ::NaturalParametersManifold{ℝ, Rayleigh}, q)
     p .= -q
     return p
 end
