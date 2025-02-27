@@ -79,12 +79,15 @@ function partition_point(M::NaturalParametersManifold, p)
     return partition_point(exponential_family_typetag(M), getdims(M), p, getconditioner(M))
 end
 
+function transform_back!(p, ::NaturalParametersManifold, q)
+    p .= q
+    return p
+end
+
 function Base.convert(
     ::Type{ExponentialFamilyDistribution}, M::NaturalParametersManifold, p
 )
-    # The extra `nothing` at the end bypasses the check that the `p` is a 
-    # valid vector of parameters
     return ExponentialFamilyDistribution(
-        exponential_family_typetag(M), p, getconditioner(M), nothing
+        exponential_family_typetag(M), transform_back!(p, M, p), getconditioner(M), nothing
     )
 end
