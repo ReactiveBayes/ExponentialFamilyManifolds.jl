@@ -79,14 +79,18 @@ function partition_point(M::NaturalParametersManifold, p)
     return partition_point(exponential_family_typetag(M), getdims(M), p, getconditioner(M))
 end
 
-function transform_back!(p, ::NaturalParametersManifold, q)
-    p .= q
-    return p
+"""
+    transform_back!(p, ::NaturalParametersManifold, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `T`.
+"""
+function transform_back!(_, ::NaturalParametersManifold, q)
+    error("You need to implement this function for your specific 'T' of the exponential family distribution")
 end
 
 function Base.convert(
     ::Type{ExponentialFamilyDistribution}, M::NaturalParametersManifold, p
-)
+)   
     return ExponentialFamilyDistribution(
         exponential_family_typetag(M), transform_back!(p, M, p), getconditioner(M), nothing
     )
