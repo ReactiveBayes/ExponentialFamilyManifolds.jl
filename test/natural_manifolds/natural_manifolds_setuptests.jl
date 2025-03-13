@@ -20,5 +20,6 @@ function test_natural_manifold(f; seed=42, ndistributions=100)
         ef_back = convert(ExponentialFamilyDistribution, M, η)
         @test getnaturalparameters(ef_back) ≈ getnaturalparameters(ef)
         @test getconditioner(ef_back) == getconditioner(ef)
+        @test isproper(ef_back) == true
     end
 end

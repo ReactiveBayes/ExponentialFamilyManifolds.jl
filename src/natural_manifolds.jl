@@ -92,6 +92,6 @@ function Base.convert(
     ::Type{ExponentialFamilyDistribution}, M::NaturalParametersManifold, p
 )   
     return ExponentialFamilyDistribution(
-        exponential_family_typetag(M), transform_back!(p, M, p), getconditioner(M), nothing
+        exponential_family_typetag(M), transform_back(M, p), getconditioner(M), nothing
     )
 end
