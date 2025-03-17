@@ -20,8 +20,10 @@ function test_natural_manifold(f; seed=42, ndistributions=100, test_metric=true)
 
         if test_metric
             @test M.metric isa ExponentialFamilyManifolds.FisherInformationMetric
-            @test ManifoldsBase.get_basis_default(M, η) isa ExponentialFamilyManifolds.NaturalBasis
-            @test Manifolds.local_metric(M, η, ManifoldsBase.get_basis_default(M, η)) ≈ ExponentialFamily.fisherinformation(ef)
+            @test ManifoldsBase.get_basis_default(M, η) isa
+                ExponentialFamilyManifolds.NaturalBasis
+            @test Manifolds.local_metric(M, η, ManifoldsBase.get_basis_default(M, η)) ≈
+                ExponentialFamily.fisherinformation(ef)
         end
     end
 end

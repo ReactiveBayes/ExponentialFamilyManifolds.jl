@@ -47,11 +47,15 @@ getretraction(M::NaturalParametersManifold) = M.retraction
 
 # The `NaturalParametersManifold` simply adds extra properties to the `base` and 
 # acts as a "decorator"
-function select_skip_methods(::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,BaseMetric}) where {F,𝔽,T,D,MB,C,R}
+function select_skip_methods(
+    ::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,BaseMetric}
+) where {F,𝔽,T,D,MB,C,R}
     return ManifoldsBase.IsExplicitDecorator()
 end
 
-function select_skip_methods(f::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}) where {F,𝔽,T,D,MB,C,R}
+function select_skip_methods(
+    f::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}
+) where {F,𝔽,T,D,MB,C,R}
     if f in (
         ManifoldsBase.retract,
         ManifoldsBase.retract!,
@@ -62,7 +66,7 @@ function select_skip_methods(f::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,F
         Manifolds.default_retraction_method,
         Manifolds.get_basis_default,
         Manifolds.christoffel_symbols_second,
-        Manifolds.christoffel_symbols_first
+        Manifolds.christoffel_symbols_first,
     )
         return ManifoldsBase.EmptyTrait()
     else
@@ -203,16 +207,19 @@ function ManifoldsBase.retract!(
 end
 
 function ManifoldsBase.retract_fused!(
-    M::NaturalParametersManifold{𝔽,T,D,BM,C,R,FisherInformationMetric}, 
-    q, p, X, t::Number, 
-    method::SecondOrderRetraction
+    M::NaturalParametersManifold{𝔽,T,D,BM,C,R,FisherInformationMetric},
+    q,
+    p,
+    X,
+    t::Number,
+    method::SecondOrderRetraction,
 ) where {𝔽,T,D,BM,C,R}
     basis = ManifoldsBase.get_basis_default(M, p)
     Γ = Manifolds.christoffel_symbols_second(M, p, basis; backend=method.extra)
-    
+
     Δ = similar(p)
-    Manifolds.@einsum Δ[k] = -0.5 * Γ[k,i,j] * (t * X[i]) * (t * X[j])
-    
+    Manifolds.@einsum Δ[k] = -0.5 * Γ[k, i, j] * (t * X[i]) * (t * X[j])
+
     q .= p .+ t .* X .+ Δ
     return q
 end
@@ -227,8 +234,10 @@ struct NaturalBasis{𝔽,VST<:VectorSpaceType} <: AbstractBasis{𝔽,VST}
     vector_space::VST
 end
 
-NaturalBasis(𝔽 = ℝ, vs::VectorSpaceType = TangentSpaceType()) = NaturalBasis{𝔽,typeof(vs)}(vs)
-NaturalBasis{𝔽}(vs::VectorSpaceType = TangentSpaceType()) where {𝔽} = NaturalBasis{𝔽,typeof(vs)}(vs)
+NaturalBasis(𝔽=ℝ, vs::VectorSpaceType=TangentSpaceType()) = NaturalBasis{𝔽,typeof(vs)}(vs)
+function NaturalBasis{𝔽}(vs::VectorSpaceType=TangentSpaceType()) where {𝔽}
+    return NaturalBasis{𝔽,typeof(vs)}(vs)
+end
 
 function ManifoldsBase.get_basis_default(
     M::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}, p

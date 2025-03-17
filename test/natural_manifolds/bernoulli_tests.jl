@@ -18,7 +18,12 @@ end
     basis = ExponentialFamilyManifolds.NaturalBasis()
 
     @show Manifolds.local_metric(M, p, basis)
-    @show Manifolds.local_metric_jacobian(M, p, basis, backend = AutoForwardDiff())
-    q = retract(M, p, X, ExponentialFamilyManifolds.SecondOrderRetraction(backend=AutoForwardDiff()))
+    @show Manifolds.local_metric_jacobian(M, p, basis, backend=AutoForwardDiff())
+    q = retract(
+        M,
+        p,
+        X,
+        ExponentialFamilyManifolds.SecondOrderRetraction(; backend=AutoForwardDiff()),
+    )
     @show q
 end
