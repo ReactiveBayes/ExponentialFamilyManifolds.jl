@@ -68,7 +68,11 @@ function partition_point(
 end
 
 function ManifoldsBase.default_retraction_method(
-    ::NaturalParametersManifold{𝔽,MvNormalMeanCovariance,D,M,C,Nothing}, ::Type{T}
+    ::NaturalParametersManifold{𝔽,MvNormalMeanCovariance,D,M,C,Nothing,BaseMetric}, ::Type{T}
 ) where {𝔽,T,D,M,C}
     return ManifoldsBase.ExponentialRetraction()
+end
+
+function getdefaultmetric(::Type{MvNormalMeanCovariance})
+    return BaseMetric()
 end
