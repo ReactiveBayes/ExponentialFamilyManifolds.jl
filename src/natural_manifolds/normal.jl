@@ -66,3 +66,5 @@ function partition_point(
     k = first(dims)
     return ArrayPartition(view(p, 1:k), view(p, k+1:k+1))
 end
+
+ManifoldsBase.default_retraction_method(::NaturalParametersManifold{𝔽, MvNormalMeanCovariance, D, M, C, Nothing}, ::Type{T}) where {𝔽, T, D, M, C} = ManifoldsBase.ExponentialRetraction()
