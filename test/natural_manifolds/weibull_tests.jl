@@ -4,5 +4,4 @@
     test_natural_manifold() do rng
         return Weibull(10rand(rng), 10rand(rng))
     end
-
 end

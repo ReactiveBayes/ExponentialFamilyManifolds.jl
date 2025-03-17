@@ -225,11 +225,11 @@ end
     M = SymmetricNegativeDefinite(2)
     p = rand(rng, M)
     X = randn(rng, 2, 2)
-    X = (X + X')/2  # Make symmetric
-    
+    X = (X + X') / 2  # Make symmetric
+
     q1 = similar(p)
     q2 = similar(p)
-    
+
     # Test that retract! is equivalent to retract_fused! with t=1
     retract!(M, q1, p, X, ExponentialRetraction())
     ManifoldsBase.retract_fused!(M, q2, p, X, 1.0, ExponentialRetraction())

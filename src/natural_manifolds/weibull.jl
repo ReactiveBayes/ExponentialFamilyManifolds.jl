@@ -14,6 +14,6 @@ end
 Converts the `point` to a compatible representation for the natural manifold of type `Weibull`.
 """
 function partition_point(::Type{Weibull}, ::Tuple{}, p, conditioner=nothing)
-    @assert conditioner > 0  "Conditioner $(conditioner) should be positive"
+    @assert conditioner > 0 "Conditioner $(conditioner) should be positive"
     return p
 end

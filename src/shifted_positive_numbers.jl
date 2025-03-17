@@ -59,9 +59,9 @@ function ManifoldsBase.exp_fused!(M::ShiftedPositiveNumbers, q, p, X, t::Number)
     @inbounds q[1] = shift(
         M,
         ManifoldsBase.exp(
-            PositiveNumbers(), 
-            unshift(M, @inbounds(p[1])), 
-            @inbounds(X[1]) * t  # Scale the tangent vector by t
+            PositiveNumbers(),
+            unshift(M, @inbounds(p[1])),
+            @inbounds(X[1]) * t,  # Scale the tangent vector by t
         ),
     )
     return q

@@ -65,7 +65,7 @@ end
 Returns `base` manifold for the distribution of type `T` of dimension `dims`.
 Optionally accepts the conditioner, which is set to `nothing` by default.
 """
-function get_natural_manifold_base(M::NaturalParametersManifold) 
+function get_natural_manifold_base(M::NaturalParametersManifold)
     return getbase(M)
 end
 
