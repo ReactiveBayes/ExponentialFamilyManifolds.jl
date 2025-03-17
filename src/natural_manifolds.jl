@@ -59,6 +59,10 @@ function select_skip_methods(f::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,F
         ManifoldsBase.retract_fused!,
         Manifolds.local_metric,
         Manifolds.local_metric_jacobian,
+        Manifolds.default_retraction_method,
+        Manifolds.get_basis_default,
+        Manifolds.christoffel_symbols_second,
+        Manifolds.christoffel_symbols_first
     )
         return ManifoldsBase.EmptyTrait()
     else
@@ -157,6 +161,21 @@ function ChartNOrderRetraction{O}() where {O}
 end
 
 const FirstOrderRetraction = ChartNOrderRetraction{1}
+const SecondOrderRetraction = ChartNOrderRetraction{2}
+
+"""
+    SecondOrderRetraction(; backend=nothing)
+
+Create a second-order retraction method that uses Christoffel symbols to compute
+a more accurate retraction. If a backend is provided, it will be used for any
+automatic differentiation needed to compute the Christoffel symbols.
+
+# Arguments
+- `backend`: Optional backend for automatic differentiation (e.g., `ADTypes.AutoForwardDiff()`)
+"""
+function SecondOrderRetraction(; backend=nothing)
+    return ChartNOrderRetraction{2,typeof(backend)}(backend)
+end
 
 function ManifoldsBase.default_retraction_method(
     ::NaturalParametersManifold{𝔽,TD,D,M,C,Nothing,FisherInformationMetric}, ::Type{T}
@@ -179,6 +198,27 @@ end
 
 function ManifoldsBase.retract!(
     M::NaturalParametersManifold, q, p, X, method::FirstOrderRetraction
+)
+    return ManifoldsBase.retract_fused!(M, q, p, X, one(eltype(X)), method)
+end
+
+function ManifoldsBase.retract_fused!(
+    M::NaturalParametersManifold{𝔽,T,D,BM,C,R,FisherInformationMetric}, 
+    q, p, X, t::Number, 
+    method::SecondOrderRetraction
+) where {𝔽,T,D,BM,C,R}
+    basis = ManifoldsBase.get_basis_default(M, p)
+    Γ = Manifolds.christoffel_symbols_second(M, p, basis; backend=method.extra)
+    
+    Δ = similar(p)
+    Manifolds.@einsum Δ[k] = -0.5 * Γ[k,i,j] * (t * X[i]) * (t * X[j])
+    
+    q .= p .+ t .* X .+ Δ
+    return q
+end
+
+function ManifoldsBase.retract!(
+    M::NaturalParametersManifold, q, p, X, method::SecondOrderRetraction
 )
     return ManifoldsBase.retract_fused!(M, q, p, X, one(eltype(X)), method)
 end
