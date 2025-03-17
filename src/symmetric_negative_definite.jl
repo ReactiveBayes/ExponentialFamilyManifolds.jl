@@ -94,7 +94,9 @@ function ManifoldsBase.retract_fused!(
     return ManifoldsBase.exp_fused!(M, q, p, X, t)
 end
 
-function ManifoldsBase.retract!(M::SymmetricNegativeDefinite, q, p, X, ::ExponentialRetraction)
+function ManifoldsBase.retract!(
+    M::SymmetricNegativeDefinite, q, p, X, ::ExponentialRetraction
+)
     return ManifoldsBase.retract_fused!(M, q, p, X, one(eltype(p)), ExponentialRetraction())
 end
 

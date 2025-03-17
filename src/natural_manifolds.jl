@@ -22,10 +22,16 @@ getretraction(M::NaturalParametersManifold) = M.retraction
 
 # The `NaturalParametersManifold` simply adds extra properties to the `base` and 
 # acts as a "decorator"
-@inline function ManifoldsBase.active_traits(f::F, ::NaturalParametersManifold, args...) where {F}
+@inline function ManifoldsBase.active_traits(
+    f::F, ::NaturalParametersManifold, args...
+) where {F}
     # Don't delegate retraction-related methods
-    if f in (ManifoldsBase.retract, ManifoldsBase.retract!, 
-             ManifoldsBase.retract_fused, ManifoldsBase.retract_fused!)
+    if f in (
+        ManifoldsBase.retract,
+        ManifoldsBase.retract!,
+        ManifoldsBase.retract_fused,
+        ManifoldsBase.retract_fused!,
+    )
         return ManifoldsBase.EmptyTrait()
     else
         return ManifoldsBase.IsExplicitDecorator()
@@ -62,7 +68,9 @@ julia> ExponentialFamilyManifolds.get_natural_manifold(MvNormalMeanCovariance, (
 true
 ```
 """
-function get_natural_manifold(::Type{T}, dims, conditioner=nothing, retraction = nothing) where {T}
+function get_natural_manifold(
+    ::Type{T}, dims, conditioner=nothing, retraction=nothing
+) where {T}
     return NaturalParametersManifold(
         T, dims, get_natural_manifold_base(T, dims, conditioner), conditioner, retraction
     )
@@ -75,7 +83,7 @@ end
 Returns `base` manifold for the distribution of type `T` of dimension `dims`.
 Optionally accepts the conditioner, which is set to `nothing` by default.
 """
-function get_natural_manifold_base(M::NaturalParametersManifold) 
+function get_natural_manifold_base(M::NaturalParametersManifold)
     return getbase(M)
 end
 
@@ -99,27 +107,37 @@ function Base.convert(
     )
 end
 
-struct ChartNOrderRetraction{Order, E} <: AbstractRetractionMethod
+struct ChartNOrderRetraction{Order,E} <: AbstractRetractionMethod
     extra::E
 end
 
 function ChartNOrderRetraction{O}() where {O}
-    return ChartNOrderRetraction{O, Nothing}(nothing)
+    return ChartNOrderRetraction{O,Nothing}(nothing)
 end
 
 const FirstOrderRetraction = ChartNOrderRetraction{1}
 
-ManifoldsBase.default_retraction_method(::NaturalParametersManifold{𝔽,TD,D,M,C,Nothing}, ::Type{T}) where {𝔽, T,TD, D, M, C} = FirstOrderRetraction()
+function ManifoldsBase.default_retraction_method(
+    ::NaturalParametersManifold{𝔽,TD,D,M,C,Nothing}, ::Type{T}
+) where {𝔽,T,TD,D,M,C}
+    return FirstOrderRetraction()
+end
 
-ManifoldsBase.default_retraction_method(M::NaturalParametersManifold{𝔽,TD,D,BM,C,R}, ::Type{T}) where {𝔽, T,TD, D, BM, C, R} = getretraction(M)
+function ManifoldsBase.default_retraction_method(
+    M::NaturalParametersManifold{𝔽,TD,D,BM,C,R}, ::Type{T}
+) where {𝔽,T,TD,D,BM,C,R}
+    return getretraction(M)
+end
 
-function ManifoldsBase.retract_fused!(::NaturalParametersManifold, q, p, X, t::Number, method::FirstOrderRetraction)
+function ManifoldsBase.retract_fused!(
+    ::NaturalParametersManifold, q, p, X, t::Number, method::FirstOrderRetraction
+)
     q .= p .+ t .* X
     return q
 end
 
-function ManifoldsBase.retract!(M::NaturalParametersManifold, q, p, X, method::FirstOrderRetraction)
+function ManifoldsBase.retract!(
+    M::NaturalParametersManifold, q, p, X, method::FirstOrderRetraction
+)
     return ManifoldsBase.retract_fused!(M, q, p, X, one(eltype(X)), method)
 end
-
-
