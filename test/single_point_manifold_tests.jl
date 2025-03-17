@@ -1,5 +1,14 @@
 @testitem "Generic properties of SinglePointManifold" begin
-    import ManifoldsBase: check_point, check_vector, embed, representation_size, injectivity_radius, get_embedding, is_flat, inner, manifold_dimension
+    import ManifoldsBase:
+        check_point,
+        check_vector,
+        embed,
+        representation_size,
+        injectivity_radius,
+        get_embedding,
+        is_flat,
+        inner,
+        manifold_dimension
     import ExponentialFamilyManifolds: SinglePointManifold
     using ManifoldsBase, Static, StaticArrays, JET, Manifolds
     using StableRNGs
@@ -7,20 +16,7 @@
 
     rng = StableRNG(42)
 
-
-    points = [
-        0,
-        0.0,
-        0.0f0,
-        1,
-        1.0,
-        1.0f0, 
-        -1,
-        2,
-        π,
-        rand(),
-        randn()
-    ]
+    points = [0, 0.0, 0.0f0, 1, 1.0, 1.0f0, -1, 2, π, rand(), randn()]
 
     for p in points
         M = SinglePointManifold(p)
@@ -32,7 +28,7 @@
         @test @inferred(is_flat(M)) === true
         @test injectivity_radius(M) ≈ 0
         @test default_retraction_method(M) == ExponentialRetraction()
-     
+
         @test_throws MethodError get_embedding(M)
 
         @test check_point(M, p) === nothing
@@ -99,7 +95,7 @@ end
                 grad_f,
                 p0;
                 stepsize=stepsize,
-                stopping_criterion=StopAfterIteration(1)
+                stopping_criterion=StopAfterIteration(1),
             )
 
             @test q1 ≈ s

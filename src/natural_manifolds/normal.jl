@@ -64,5 +64,5 @@ function partition_point(
     ::Type{MvNormalMeanScalePrecision}, dims::Tuple{Int}, p, conditioner=nothing
 )
     k = first(dims)
-    return ArrayPartition(view(p, 1:k), view(p, k+1:k+1))
+    return ArrayPartition(view(p, 1:k), view(p, (k + 1):(k + 1)))
 end

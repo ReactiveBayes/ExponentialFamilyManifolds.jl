@@ -59,9 +59,7 @@
 
                 @test @inferred(
                     getnaturalparameters(
-                        convert(
-                            ExponentialFamilyDistribution, M, partition_point(M, η)
-                        ),
+                        convert(ExponentialFamilyDistribution, M, partition_point(M, η))
                     )
                 ) == η
 

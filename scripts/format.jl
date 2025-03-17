@@ -1,4 +1,4 @@
-import JuliaFormatter;
+using JuliaFormatter: JuliaFormatter;
 using ArgParse;
 
 s = ArgParseSettings()
@@ -13,7 +13,12 @@ commandline_args = parse_args(s)
 folders_to_format = ["scripts", "src", "test"]
 
 overwrite = commandline_args["overwrite"]
-formatted = all(map(folder -> JuliaFormatter.format(folder; overwrite = overwrite, verbose = true), folders_to_format))
+formatted = all(
+    map(
+        folder -> JuliaFormatter.format(folder; overwrite=overwrite, verbose=true),
+        folders_to_format,
+    ),
+)
 
 if !formatted && !overwrite
     @error "JuliaFormatter lint has failed. Run `make format` from `ReactiveMP.jl` main directory and commit your changes to fix code style."

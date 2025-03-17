@@ -6,7 +6,7 @@ using Random
 
 This manifold represents a set from one point.
 """
-struct SinglePointManifold{T, R} <: AbstractManifold{ℝ}
+struct SinglePointManifold{T,R} <: AbstractManifold{ℝ}
     point::T
     representation_size::R
 end
@@ -16,7 +16,7 @@ function SinglePointManifold(point::T) where {T}
 end
 
 function Base.show(io::IO, M::SinglePointManifold)
-    print(io, "SinglePointManifold(", M.point, ")")
+    return print(io, "SinglePointManifold(", M.point, ")")
 end
 
 ManifoldsBase.manifold_dimension(::SinglePointManifold) = 0
@@ -27,7 +27,9 @@ ManifoldsBase.default_retraction_method(::SinglePointManifold) = ExponentialRetr
 
 function ManifoldsBase.check_point(M::SinglePointManifold, p; kwargs...)
     if !(p ≈ M.point)
-        return DomainError(p, "The point $(p) does not lie on $(M), which contains only $(M.point).")
+        return DomainError(
+            p, "The point $(p) does not lie on $(M), which contains only $(M.point)."
+        )
     end
     return nothing
 end
