@@ -5,3 +5,11 @@
         return Laplace(10rand(rng), 10rand(rng))
     end
 end
+
+@testitem "Check MLE works for `Laplace`" begin
+    include("natural_manifolds_setuptests.jl")
+
+    test_natural_manifold() do rng
+        return Laplace(rand(rng), rand(rng))
+    end
+end
