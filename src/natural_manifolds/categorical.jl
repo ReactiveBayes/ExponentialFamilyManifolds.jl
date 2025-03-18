@@ -16,3 +16,7 @@ Converts the `point` to a compatible representation for the natural manifold of 
 function partition_point(::Type{Categorical}, ::Tuple{}, p, conditioner=nothing)
     return ArrayPartition(view(p, 1:(conditioner - 1)), view(p, conditioner:conditioner))
 end
+
+function Manifolds.representation_size(M::NaturalParametersManifold{𝔽, Categorical}) where {𝔽}
+    return (getconditioner(M),)
+end

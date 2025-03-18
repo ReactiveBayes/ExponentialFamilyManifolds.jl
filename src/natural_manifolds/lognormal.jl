@@ -15,3 +15,5 @@ Converts the `point` to a compatible representation for the natural manifold of 
 function partition_point(::Type{LogNormal}, ::Tuple{}, p, conditioner=nothing)
     return ArrayPartition(view(p, 1:1), view(p, 2:2))
 end
+
+Manifolds.representation_size(::NaturalParametersManifold{𝔽, LogNormal}) where {𝔽} = (2,)

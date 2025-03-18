@@ -70,3 +70,9 @@ end
 function getdefaultmetric(::Type{MvNormalMeanCovariance})
     return BaseMetric()
 end
+
+Manifolds.representation_size(::NaturalParametersManifold{𝔽, NormalMeanVariance}) where {𝔽} = (2,)
+
+function Manifolds.representation_size(M::NaturalParametersManifold{𝔽, MvNormalMeanScalePrecision}) where {𝔽}
+    return (M.dims[1] +1, )
+end

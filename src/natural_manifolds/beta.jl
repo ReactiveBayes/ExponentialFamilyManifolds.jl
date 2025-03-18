@@ -17,3 +17,5 @@ Converts the `point` to a compatible representation for the natural manifold of 
 function partition_point(::Type{Beta}, ::Tuple{}, p, conditioner=nothing)
     return ArrayPartition(view(p, 1:1), view(p, 2:2))
 end
+
+Manifolds.representation_size(::NaturalParametersManifold{𝔽, Beta}) where {𝔽} = (2,)

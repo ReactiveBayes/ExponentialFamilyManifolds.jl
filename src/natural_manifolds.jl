@@ -100,6 +100,7 @@ function select_skip_methods(
         Manifolds.get_basis_default,
         Manifolds.christoffel_symbols_second,
         Manifolds.christoffel_symbols_first,
+        Manifolds.representation_size
     )
         return ManifoldsBase.EmptyTrait()
     else
@@ -221,7 +222,6 @@ function ManifoldsBase.retract_fused!(
 
     Δ = similar(p)
     Manifolds.@einsum Δ[k] = -0.5 * Γ[k, i, j] * (t * X[i]) * (t * X[j])
-
     q .= p .+ t .* X .+ Δ
     return q
 end
