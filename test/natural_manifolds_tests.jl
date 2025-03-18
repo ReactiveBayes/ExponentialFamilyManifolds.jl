@@ -76,3 +76,17 @@
         end
     end
 end
+
+@testitem "Natural manifold properties: BaseMetric" begin
+    using Distributions, ExponentialFamily, Manifolds, ManifoldsBase, StableRNGs, JET, LinearAlgebra
+
+    import ExponentialFamilyManifolds: BaseMetric
+
+    M = ExponentialFamilyManifolds.get_natural_manifold(Beta, (), nothing, BaseMetric())
+    @test M.metric isa BaseMetric
+    @test ExponentialFamilyManifolds.select_skip_methods(ManifoldsBase.retract, M) == ManifoldsBase.IsExplicitDecorator()
+    p = rand(StableRNG(42), M)
+    q = copy(p)
+    @test  ManifoldsBase.retract!(M, q, p, p) ≈ ManifoldsBase.retract!(M.base, q, p, p)
+end
+

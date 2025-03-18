@@ -3,6 +3,8 @@ using StableRNGs, ExponentialFamily, Manifolds, ManifoldsBase, LinearAlgebra
 
 import ExponentialFamilyManifolds: get_natural_manifold, partition_point
 
+using FastCholesky
+
 function test_natural_manifold(f; seed=42, ndistributions=100, test_metric=true)
     rng = StableRNG(seed)
 
@@ -24,6 +26,8 @@ function test_natural_manifold(f; seed=42, ndistributions=100, test_metric=true)
                 ExponentialFamilyManifolds.NaturalBasis
             @test Manifolds.local_metric(M, η, ManifoldsBase.get_basis_default(M, η)) ≈
                 ExponentialFamily.fisherinformation(ef)
+            @test Manifolds.inverse_local_metric(M, η, ManifoldsBase.get_basis_default(M, η)) ≈
+                cholinv(ExponentialFamily.fisherinformation(ef))
         end
     end
 end

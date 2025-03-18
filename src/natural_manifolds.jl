@@ -3,12 +3,45 @@ using FastCholesky
 
 import ExponentialFamily: exponential_family_typetag
 
+
+struct ChartNOrderRetraction{Order,E} <: AbstractRetractionMethod
+    extra::E
+end
+
+function ChartNOrderRetraction{O}() where {O}
+    return ChartNOrderRetraction{O,Nothing}(nothing)
+end
+
+const FirstOrderRetraction = ChartNOrderRetraction{1}
+const SecondOrderRetraction = ChartNOrderRetraction{2}
+
+"""
+    SecondOrderRetraction(; backend=nothing)
+
+Create a second-order retraction method that uses Christoffel symbols to compute
+a more accurate retraction. If a backend is provided, it will be used for any
+automatic differentiation needed to compute the Christoffel symbols.
+
+# Arguments
+- `backend`: Optional backend for automatic differentiation (e.g., `ADTypes.AutoForwardDiff()`)
+"""
+function SecondOrderRetraction(; backend=nothing)
+    return ChartNOrderRetraction{2,typeof(backend)}(backend)
+end
+
 """
     FisherInformationMetric <: RiemannianMetric
 
 Specifier that we need to use the Fisher information metric.
 """
-struct FisherInformationMetric <: RiemannianMetric end
+struct FisherInformationMetric{R} <: RiemannianMetric 
+    default_retraction::R
+end
+
+function FisherInformationMetric()
+    retraction = FirstOrderRetraction()
+    return FisherInformationMetric{typeof(retraction)}(retraction)
+end
 
 """
     BaseMetric <: RiemannianMetric
@@ -32,30 +65,29 @@ end
 The manifold for the natural parameters of the distribution of type `T` with dimensions `dims`.
 An internal structure, use `get_natural_manifold` to create an instance of a manifold for the natural parameters of distribution of type `T`.
 """
-struct NaturalParametersManifold{𝔽,T,D,M,C,R,MT} <: AbstractDecoratorManifold{𝔽}
+struct NaturalParametersManifold{𝔽,T,D,M,C,MT} <: AbstractDecoratorManifold{𝔽}
     dims::D
     base::M
     conditioner::C
-    retraction::R
     metric::MT
 end
 
 getdims(M::NaturalParametersManifold) = M.dims
 getbase(M::NaturalParametersManifold) = M.base
 getconditioner(M::NaturalParametersManifold) = M.conditioner
-getretraction(M::NaturalParametersManifold) = M.retraction
+getmetric(M::NaturalParametersManifold) = M.metric
 
 # The `NaturalParametersManifold` simply adds extra properties to the `base` and 
 # acts as a "decorator"
 function select_skip_methods(
-    ::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,BaseMetric}
-) where {F,𝔽,T,D,MB,C,R}
+    ::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,BaseMetric}
+) where {F,𝔽,T,D,MB,C}
     return ManifoldsBase.IsExplicitDecorator()
 end
 
 function select_skip_methods(
-    f::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}
-) where {F,𝔽,T,D,MB,C,R}
+    f::F, ::NaturalParametersManifold{𝔽,T,D,MB,C,<:FisherInformationMetric}
+) where {F,𝔽,T,D,MB,C}
     if f in (
         ManifoldsBase.retract,
         ManifoldsBase.retract!,
@@ -63,6 +95,7 @@ function select_skip_methods(
         ManifoldsBase.retract_fused!,
         Manifolds.local_metric,
         Manifolds.local_metric_jacobian,
+        Manifolds.inverse_local_metric,
         Manifolds.default_retraction_method,
         Manifolds.get_basis_default,
         Manifolds.christoffel_symbols_second,
@@ -93,11 +126,10 @@ function NaturalParametersManifold(
     dims::D,
     base::M,
     conditioner::C=nothing,
-    retraction::R=nothing,
     metric::MT=getdefaultmetric(T),
-) where {T,𝔽,D,M<:AbstractManifold{𝔽},C,R,MT}
-    return NaturalParametersManifold{𝔽,T,D,M,C,R,MT}(
-        dims, base, conditioner, retraction, metric
+) where {T,𝔽,D,M<:AbstractManifold{𝔽},C,MT}
+    return NaturalParametersManifold{𝔽,T,D,M,C,MT}(
+        dims, base, conditioner, metric
     )
 end
 
@@ -118,10 +150,10 @@ true
 ```
 """
 function get_natural_manifold(
-    ::Type{T}, dims, conditioner=nothing, retraction=nothing
+    ::Type{T}, dims, conditioner=nothing, metric=getdefaultmetric(T)
 ) where {T}
     return NaturalParametersManifold(
-        T, dims, get_natural_manifold_base(T, dims, conditioner), conditioner, retraction
+        T, dims, get_natural_manifold_base(T, dims, conditioner), conditioner, metric
     )
 end
 
@@ -156,41 +188,11 @@ function Base.convert(
     )
 end
 
-struct ChartNOrderRetraction{Order,E} <: AbstractRetractionMethod
-    extra::E
-end
-
-function ChartNOrderRetraction{O}() where {O}
-    return ChartNOrderRetraction{O,Nothing}(nothing)
-end
-
-const FirstOrderRetraction = ChartNOrderRetraction{1}
-const SecondOrderRetraction = ChartNOrderRetraction{2}
-
-"""
-    SecondOrderRetraction(; backend=nothing)
-
-Create a second-order retraction method that uses Christoffel symbols to compute
-a more accurate retraction. If a backend is provided, it will be used for any
-automatic differentiation needed to compute the Christoffel symbols.
-
-# Arguments
-- `backend`: Optional backend for automatic differentiation (e.g., `ADTypes.AutoForwardDiff()`)
-"""
-function SecondOrderRetraction(; backend=nothing)
-    return ChartNOrderRetraction{2,typeof(backend)}(backend)
-end
 
 function ManifoldsBase.default_retraction_method(
-    ::NaturalParametersManifold{𝔽,TD,D,M,C,Nothing,FisherInformationMetric}, ::Type{T}
-) where {𝔽,T,TD,D,M,C}
-    return FirstOrderRetraction()
-end
-
-function ManifoldsBase.default_retraction_method(
-    M::NaturalParametersManifold{𝔽,TD,D,BM,C,R}, ::Type{T}
-) where {𝔽,T,TD,D,BM,C,R}
-    return getretraction(M)
+    M::NaturalParametersManifold{𝔽,TD,D,BM,C,<:FisherInformationMetric}, ::Type{T}
+) where {𝔽,T,TD,D,BM,C}
+    return getmetric(M).default_retraction
 end
 
 function ManifoldsBase.retract_fused!(
@@ -207,13 +209,13 @@ function ManifoldsBase.retract!(
 end
 
 function ManifoldsBase.retract_fused!(
-    M::NaturalParametersManifold{𝔽,T,D,BM,C,R,FisherInformationMetric},
+    M::NaturalParametersManifold{𝔽,T,D,BM,C,<:FisherInformationMetric},
     q,
     p,
     X,
     t::Number,
     method::SecondOrderRetraction,
-) where {𝔽,T,D,BM,C,R}
+) where {𝔽,T,D,BM,C}
     basis = ManifoldsBase.get_basis_default(M, p)
     Γ = Manifolds.christoffel_symbols_second(M, p, basis; backend=method.extra)
 
@@ -240,21 +242,21 @@ function NaturalBasis{𝔽}(vs::VectorSpaceType=TangentSpaceType()) where {𝔽}
 end
 
 function ManifoldsBase.get_basis_default(
-    M::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}, p
-) where {𝔽,T,D,MB,C,R}
+    ::NaturalParametersManifold{𝔽,T,D,MB,C,<:FisherInformationMetric}, p
+) where {𝔽,T,D,MB,C}
     return NaturalBasis{𝔽}()
 end
 
 function Manifolds.local_metric(
-    M::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}, p, ::NaturalBasis
-) where {𝔽,T,D,MB,C,R}
+    M::NaturalParametersManifold{𝔽,T,D,MB,C,<:FisherInformationMetric}, p, ::NaturalBasis
+) where {𝔽,T,D,MB,C}
     ef = convert(ExponentialFamilyDistribution, M, p)
     return ExponentialFamily.fisherinformation(ef)
 end
 
 function Manifolds.inverse_local_metric(
-    M::NaturalParametersManifold{𝔽,T,D,MB,C,R,FisherInformationMetric}, p, ::NaturalBasis
-) where {𝔽,T,D,MB,C,R}
+    M::NaturalParametersManifold{𝔽,T,D,MB,C,<:FisherInformationMetric}, p, ::NaturalBasis
+) where {𝔽,T,D,MB,C}
     ef = convert(ExponentialFamilyDistribution, M, p)
     return cholinv(ExponentialFamily.fisherinformation(ef))
 end
