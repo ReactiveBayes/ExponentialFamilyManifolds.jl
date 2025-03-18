@@ -29,7 +29,7 @@ end
 @testitem "Check `MvNormalMeanScalePrecision` natural manifold" begin
     include("natural_manifolds_setuptests.jl")
 
-    test_natural_manifold() do rng
+    test_natural_manifold(fisher_fd_friendly=false) do rng
         k = rand(rng, 1:10)
         m = randn(rng, k)
         γ = rand(rng)^2 + 1

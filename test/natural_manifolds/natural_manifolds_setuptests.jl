@@ -1,11 +1,11 @@
 
 using StableRNGs, ExponentialFamily, Manifolds, ManifoldsBase, LinearAlgebra
-
+using ADTypes: AutoForwardDiff
 import ExponentialFamilyManifolds: get_natural_manifold, partition_point
 
 using FastCholesky
 
-function test_natural_manifold(f; seed=42, ndistributions=100, test_metric=true, test_injectivity_radius=true)
+function test_natural_manifold(f; seed=42, ndistributions=100, test_metric=true, test_injectivity_radius=true, fisher_fd_friendly=true)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -40,18 +40,29 @@ function test_natural_manifold(f; seed=42, ndistributions=100, test_metric=true,
     if test_metric && M.metric isa ExponentialFamilyManifolds.FisherInformationMetric
         @testset "Testing $(typeof(M)) with retractions" begin
             pts = [rand(rng, M) for _ in 1:5]
+
+            if fisher_fd_friendly
+                retraction_methods = [
+                    ExponentialFamilyManifolds.FirstOrderRetraction(),
+                    ExponentialFamilyManifolds.SecondOrderRetraction(backend=AutoForwardDiff()),
+                ]
+            else
+                retraction_methods = [
+                    ExponentialFamilyManifolds.FirstOrderRetraction(),
+                ]
+            end
+
             Manifolds.test_manifold(
                 M, 
                 pts;
                 test_exp_log=true,
                 default_inverse_retraction_method=nothing,
                 test_default_vector_transport=false,
-                retraction_methods=[
-                    ExponentialFamilyManifolds.FirstOrderRetraction(),
-                ],
+                retraction_methods=retraction_methods,
                 inverse_retraction_methods=[],
                 test_injectivity_radius=test_injectivity_radius,
             )
         end
     end
 end
+  
