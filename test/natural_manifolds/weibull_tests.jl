@@ -11,7 +11,7 @@ end
     using Manopt
     import Distributions: kldivergence, Distribution
 
-    test_mle_works(mle_samples=500, ndistributions=3) do rng
+    test_mle_works(; mle_samples=500, ndistributions=3) do rng
         return Weibull(rand(rng), rand(rng))
     end
 end

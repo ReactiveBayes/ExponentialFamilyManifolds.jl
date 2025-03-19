@@ -12,8 +12,8 @@ end
     import Distributions: kldivergence, Distribution
 
     # Use fewer samples/iterations for faster tests with explicit conditioner handling
-    test_mle_works(mle_samples=200, ndistributions=3) do rng
+    test_mle_works(; mle_samples=200, ndistributions=3) do rng
         dist = Binomial(rand(rng, 1:20), rand(rng, 0:0.001:1))
-        return dist 
+        return dist
     end
 end

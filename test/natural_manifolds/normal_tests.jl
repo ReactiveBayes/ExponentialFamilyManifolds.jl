@@ -34,7 +34,7 @@ end
     using Manopt
     import Distributions: kldivergence, Distribution
 
-    test_mle_works(mle_samples=1000, ndistributions=3) do rng
+    test_mle_works(; mle_samples=1000, ndistributions=3) do rng
         return MvNormalMeanScalePrecision(randn(rng, 2), 2)
     end
 end
@@ -44,8 +44,8 @@ end
     using Manopt
     import Distributions: kldivergence, Distribution
 
-    test_mle_works(mle_samples=500, ndistributions=3) do rng
-        return NormalMeanVariance(randn(rng), 1/2)
+    test_mle_works(; mle_samples=500, ndistributions=3) do rng
+        return NormalMeanVariance(randn(rng), 1 / 2)
     end
 end
 
@@ -54,7 +54,9 @@ end
     using Manopt
     import Distributions: kldivergence, Distribution
 
-    @test_broken test_mle_works(mle_samples=500, ndistributions=3, kl_friendly=false) do rng
+    @test_broken test_mle_works(;
+        mle_samples=500, ndistributions=3, kl_friendly=false
+    ) do rng
         k = 2
         m = randn(rng, k)
         L = LowerTriangular(randn(rng, k, k))

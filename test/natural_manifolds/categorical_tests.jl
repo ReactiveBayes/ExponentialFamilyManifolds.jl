@@ -63,7 +63,7 @@ end
     using Manopt
     import Distributions: kldivergence, Distribution
 
-    @test_broken test_mle_works(mle_samples=1000, ndistributions=3) do rng
+    @test_broken test_mle_works(; mle_samples=1000, ndistributions=3) do rng
         return Categorical(rand(rng, 3))
     end
 end

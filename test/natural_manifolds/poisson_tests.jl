@@ -12,7 +12,7 @@ end
     import Distributions: kldivergence, Distribution
 
     # Use fewer samples/iterations for faster tests
-    test_mle_works(mle_samples=500, ndistributions=3) do rng
+    test_mle_works(; mle_samples=500, ndistributions=3) do rng
         return Poisson(rand(rng))
     end
 end
