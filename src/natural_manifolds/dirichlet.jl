@@ -19,3 +19,8 @@ function partition_point(::Type{Dirichlet}, dims::Tuple{Int}, p, conditioner=not
     # See comment in `get_natural_manifold_base` for `Dirichlet`
     return ArrayPartition(p')
 end
+
+function Manifolds.representation_size(M::NaturalParametersManifold{𝔽, Dirichlet}) where {𝔽}
+    dims = getdims(M)
+    return (first(dims),)
+end

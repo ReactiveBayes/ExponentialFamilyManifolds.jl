@@ -21,3 +21,7 @@ function partition_point(
     k = first(dims)
     return ArrayPartition(view(p, 1:1), reshape(view(p, 2:(1 + k^2)), (k, k)))
 end
+
+function getdefaultmetric(::Type{ExponentialFamily.WishartFast})
+    return BaseMetric()
+end

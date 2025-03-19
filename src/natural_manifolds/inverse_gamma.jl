@@ -21,3 +21,5 @@ function partition_point(
 )
     return ArrayPartition(view(p, 1:1), view(p, 2:2))
 end
+
+Manifolds.representation_size(::NaturalParametersManifold{𝔽, ExponentialFamily.GammaInverse}) where {𝔽} = (2,)

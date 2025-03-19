@@ -4,4 +4,5 @@
     test_natural_manifold() do rng
         return Beta(10rand(rng), 10rand(rng))
     end
+
 end
