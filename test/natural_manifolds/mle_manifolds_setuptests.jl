@@ -9,7 +9,7 @@ import ADTypes: AutoForwardDiff
 using ManifoldDiff
 import ManifoldDiff: TangentDiffBackend
 
-function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, kl_friendly=true)
+function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, backend_type = AutoForwardDiff(), kl_friendly=true)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -33,9 +33,7 @@ function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, kl_frie
             return -mean(s -> ExponentialFamily.logpdf(ef_candidate, s), samples)
         end
 
-        backend = TangentDiffBackend(AutoForwardDiff())
-
-        function grad(M, p)
+        function grad(M, p, backend=TangentDiffBackend(backend_type))
             return ManifoldDiff.gradient(M, (p) -> cost(M, p), p, backend)
         end
 
@@ -45,7 +43,7 @@ function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, kl_frie
             kl_div = kldivergence(convert(Distribution, ef_mle), distribution)
             @test kl_div < 0.1
         else
-            @test getnaturalparameters(ef_mle) ≈ getnaturalparameters(ef) atol = 9e-1
+            @test getnaturalparameters(ef_mle) ≈ getnaturalparameters(ef) atol = 4e-1
         end
     end
 end
