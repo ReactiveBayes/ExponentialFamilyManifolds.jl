@@ -5,9 +5,7 @@
 Get the natural manifold base for the `Categorical` distribution.
 """
 function get_natural_manifold_base(::Type{Categorical}, ::Tuple{}, conditioner=nothing)
-    return ProductManifold(
-        Euclidean(conditioner-1), SinglePointManifold([0.0])
-    )
+    return ProductManifold(Euclidean(conditioner - 1), SinglePointManifold([0.0]))
 end
 
 """

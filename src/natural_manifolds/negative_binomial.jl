@@ -28,9 +28,3 @@ function transform_back!(p, ::NaturalParametersManifold{ℝ, NegativeBinomial}, 
     return p
 end
 
-function jacobian_natural_to_canonical!(Y, ::NaturalParametersManifold{ℝ, NegativeBinomial}, X)
-    Y .= 1
-    return Y
-end
-
-

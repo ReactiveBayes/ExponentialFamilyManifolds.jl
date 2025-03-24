@@ -233,7 +233,7 @@ end
         dmp = DefaultManoptProblem(M, obj)
         s = GradientDescentState(
             M;
-            p = q,
+            p=q,
             stopping_criterion=StopWhenGradientNormLessNonAllocating(1e-8),
             stepsize=ConstantStepsizeNonAllocating(0.1),
             direction=Manopt.IdentityUpdateRule(),
@@ -274,10 +274,10 @@ end
     M = ShiftedNegativeNumbers(0.0)
     p = rand(rng, M)
     X = randn(rng, 1)
-    
+
     q1 = similar(p)
     q2 = similar(p)
-    
+
     # Test that retract! is equivalent to retract_fused! with t=1
     retract!(M, q1, p, X, ExponentialRetraction())
     ManifoldsBase.retract_fused!(M, q2, p, X, 1.0, ExponentialRetraction())

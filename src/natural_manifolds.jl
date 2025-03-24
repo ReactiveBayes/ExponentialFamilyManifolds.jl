@@ -65,7 +65,7 @@ end
 Returns `base` manifold for the distribution of type `T` of dimension `dims`.
 Optionally accepts the conditioner, which is set to `nothing` by default.
 """
-function get_natural_manifold_base(M::NaturalParametersManifold) 
+function get_natural_manifold_base(M::NaturalParametersManifold)
     return getbase(M)
 end
 
@@ -86,6 +86,16 @@ Transforms the `q` to a compatible representation for the exponential family dis
 """
 function transform_back!(_, ::NaturalParametersManifold{𝔽,T}, q) where {𝔽,T}
     error("You need to implement `transform_back!` for your specific $T of the exponential family distribution")
+end
+
+"""
+    transform_back(p, ::NaturalParametersManifold, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `T`.
+"""
+function transform_back(M::NaturalParametersManifold{𝔽,T}, q) where {𝔽,T}
+    p = similar(q)
+    return transform_back!(p, M, q)
 end
 
 function Base.convert(

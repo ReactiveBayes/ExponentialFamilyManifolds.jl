@@ -23,7 +23,9 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Weibull`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Weibull}, q)
+function transform_back!(p, M::NaturalParametersManifold{ℝ, Weibull}, q)
     p .= -q
+    conditioner = getconditioner(M)
+    @assert conditioner > 0 "Conditioner $(conditioner) should be positive"
     return p
 end
