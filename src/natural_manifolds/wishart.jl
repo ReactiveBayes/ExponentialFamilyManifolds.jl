@@ -27,11 +27,8 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `WishartFast`.
 """
-function transform_back!(p, M::NaturalParametersManifold{ℝ, ExponentialFamily.WishartFast}, q)
-    # k = first(getdims(M))
-    # p[1:1] .= view(q, 1:1)
+function transform_back!(p, ::NaturalParametersManifold{ℝ, ExponentialFamily.WishartFast}, q)
     p .= -q
-    p[1:1] .= -view(q, 1:1)
+    p[1:1] .= view(q, 1:1)
     return p
-    return ArrayPartition(view(p, 1:1), reshape(view(p, 2:(1 + k^2)), (k, k)))
 end

@@ -94,7 +94,7 @@ end
 Transforms the `q` to a compatible representation for the exponential family distribution of type `T`.
 """
 function transform_back(M::NaturalParametersManifold{𝔽,T}, q) where {𝔽,T}
-    p = similar(q)
+    p = deepcopy(q)
     return transform_back!(p, M, q)
 end
 

@@ -22,5 +22,7 @@ end
 Transforms the `q` to a compatible representation for the exponential family distribution of type `LogNormal`.
 """ 
 function transform_back!(p, ::NaturalParametersManifold{ℝ, LogNormal}, q)
-    return ArrayPartition(view(p, 1:1), -view(p, 2:2))
+    p[1:1] .= view(q, 1:1)
+    p[2:2] .= view(-q, 2:2)
+    return p
 end
