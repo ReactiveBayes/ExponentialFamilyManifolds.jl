@@ -71,6 +71,8 @@ ExponentialFamilyManifolds.ManifoldsBase.submanifold_component(p, 2)
 
 ```@docs
 ExponentialFamilyManifolds.partition_point
+ExponentialFamilyManifolds.transform_back!
+ExponentialFamilyManifolds.transform_back
 ```
 
 ## Custom generic manifolds
@@ -90,7 +92,7 @@ using ExponentialFamily, Distributions, Plots, StableRNGs
 
 rng  = StableRNG(42)
 dist = Beta(24, 6)
-data = rand(rng, dist, 200)
+data = rand(rng, dist, 500)
 
 histogram(data, xlim = (0, 1), label = "data", normalize=:pdf)
 ```
@@ -112,7 +114,7 @@ end
 
 M = ExponentialFamilyManifolds.get_natural_manifold(Beta, ())
 p = rand(rng, M)
-q = gradient_descent(M, f, g, p)
+q = gradient_descent(M, cost, g, p)
 
 q_ef = convert(ExponentialFamilyDistribution, M, q)
 q_η  = getnaturalparameters(q_ef)
@@ -144,12 +146,6 @@ The difference in KL is quite small as well:
 using Test #hide
 @test kldivergence(convert(Distribution, q_ef), dist) < 4e-3 #hide
 kldivergence(convert(Distribution, q_ef), dist)
-```
-
-# Helpers 
-
-```@docs 
-ExponentialFamilyManifolds.Negated
 ```
 
 # Index
