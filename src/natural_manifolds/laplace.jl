@@ -5,7 +5,7 @@
 Get the natural manifold base for the `Laplace` distribution.
 """
 function get_natural_manifold_base(::Type{Laplace}, ::Tuple{}, conditioner=nothing)
-    return PositiveVectors(1)
+    return ProductManifold(PositiveVectors(1))
 end
 
 """
@@ -14,7 +14,7 @@ end
 Converts the `point` to a compatible representation for the natural manifold of type `Laplace`.
 """
 function partition_point(::Type{Laplace}, ::Tuple{}, p, conditioner=nothing)
-    return -p
+    return ArrayPartition(-p)
 end
 
 """
@@ -22,7 +22,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Laplace`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Laplace}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Laplace}, q)
     p .= -q
     return p
 end

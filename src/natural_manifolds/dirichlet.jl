@@ -25,7 +25,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Dirichlet`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Dirichlet}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Dirichlet}, q)
     p .= q .- 1
     return p
 end

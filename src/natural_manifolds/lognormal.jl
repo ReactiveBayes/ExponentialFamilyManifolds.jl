@@ -20,8 +20,8 @@ end
     transform_back!(p, ::NaturalParametersManifold{LogNormal}, q)
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `LogNormal`.
-""" 
-function transform_back!(p, ::NaturalParametersManifold{ℝ, LogNormal}, q)
+"""
+function transform_back!(p, ::NaturalParametersManifold{ℝ,LogNormal}, q)
     p[1:1] .= view(q, 1:1)
     p[2:2] .= view(-q, 2:2)
     return p

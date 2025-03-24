@@ -24,7 +24,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `NormalMeanVariance`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, NormalMeanVariance}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,NormalMeanVariance}, q)
     p[1:1] .= 1.0 .* view(q, 1:1)
     p[2:2] .= -view(q, 2:2)
     return p
@@ -59,7 +59,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `MvNormalMeanCovariance`.
 """
-function transform_back!(p, M::NaturalParametersManifold{ℝ, MvNormalMeanCovariance}, q)
+function transform_back!(p, M::NaturalParametersManifold{ℝ,MvNormalMeanCovariance}, q)
     k = first(getdims(M))
     p[1:k] .= 1.0 .* view(q, 1:k)
     p[(k + 1):(k + k^2)] .= -view(q, (k + 1):(k + k^2))
@@ -87,7 +87,7 @@ function partition_point(
     ::Type{MvNormalMeanScalePrecision}, dims::Tuple{Int}, p, conditioner=nothing
 )
     k = first(dims)
-    return ArrayPartition(view(p, 1:k), -view(p, k+1:k+1))
+    return ArrayPartition(view(p, 1:k), -view(p, (k + 1):(k + 1)))
 end
 
 """
@@ -95,9 +95,9 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `MvNormalMeanScalePrecision`.
 """
-function transform_back!(p, M::NaturalParametersManifold{ℝ, MvNormalMeanScalePrecision}, q)
+function transform_back!(p, M::NaturalParametersManifold{ℝ,MvNormalMeanScalePrecision}, q)
     k = first(getdims(M))
     p[1:k] .= 1.0 .* view(q, 1:k)
-    p[k+1:k+1] .= -view(q, k+1:k+1)
+    p[(k + 1):(k + 1)] .= -view(q, (k + 1):(k + 1))
     return p
 end

@@ -23,7 +23,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Binomial`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Binomial}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Binomial}, q)
     p .= q
     return p
 end

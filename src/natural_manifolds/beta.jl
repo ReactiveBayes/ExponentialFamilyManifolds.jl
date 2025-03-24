@@ -4,9 +4,7 @@
 Get the natural manifold base for the `Beta` distribution.
 """
 function get_natural_manifold_base(::Type{Beta}, ::Tuple{}, conditioner=nothing)
-    return ProductManifold(
-        PositiveVectors(1), PositiveVectors(1)
-    )
+    return ProductManifold(PositiveVectors(1), PositiveVectors(1))
 end
 
 """
@@ -23,7 +21,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Beta`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Beta}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Beta}, q)
     p .= q .- 1
     return p
 end

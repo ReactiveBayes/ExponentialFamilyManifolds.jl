@@ -23,8 +23,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `NegativeBinomial`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, NegativeBinomial}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,NegativeBinomial}, q)
     p .= q
     return p
 end
-

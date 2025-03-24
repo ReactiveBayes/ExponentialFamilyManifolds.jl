@@ -21,7 +21,7 @@ end
 
 Transforms the natural parameter `q` back to the probability parameter for the Bernoulli distribution.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Bernoulli}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Bernoulli}, q)
     p .= q
     return p
 end

@@ -5,7 +5,7 @@
 Get the natural manifold base for the `Pareto` distribution.
 """
 function get_natural_manifold_base(::Type{Pareto}, ::Tuple{}, conditioner=nothing)
-    return PositiveVectors(1)
+    return ProductManifold(PositiveVectors(1))
 end
 
 """
@@ -14,7 +14,7 @@ end
 Converts the `point` to a compatible representation for the natural manifold of type `Pareto`.
 """
 function partition_point(::Type{Pareto}, ::Tuple{}, p, conditioner=nothing)
-    return -p .- 1
+    return ArrayPartition(-p .- 1)
 end
 
 """
@@ -22,7 +22,7 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Pareto`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Pareto}, q)
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Pareto}, q)
     p .= -(q .+ 1)
     return p
 end

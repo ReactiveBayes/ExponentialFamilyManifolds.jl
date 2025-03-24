@@ -32,7 +32,7 @@ function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, kl_frie
             ef_candidate = convert(ExponentialFamilyDistribution, M, p)
             return -mean(s -> ExponentialFamily.logpdf(ef_candidate, s), samples)
         end
-        
+
         backend = TangentDiffBackend(AutoForwardDiff())
 
         function grad(M, p)

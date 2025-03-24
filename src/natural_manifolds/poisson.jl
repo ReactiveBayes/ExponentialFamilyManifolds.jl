@@ -21,6 +21,6 @@ end
 
 Transforms the `q` to a compatible representation for the exponential family distribution of type `Bernoulli`.
 """
-function transform_back!(p, ::NaturalParametersManifold{ℝ, Poisson}, q)
-    p .= q
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Poisson}, q)
+    return p .= q
 end
