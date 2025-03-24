@@ -23,11 +23,6 @@ function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, backend
         # Generate samples from the distribution
         samples = [rand(rng, distribution) for _ in 1:mle_samples]
 
-        all_stats = map(samples) do s
-            ExponentialFamily.pack_parameters(ExponentialFamily.sufficientstatistics(ef, s))
-        end
-        mean_stats = mean(all_stats)
-
         function cost(M, p)
             ef_candidate = convert(ExponentialFamilyDistribution, M, p)
             return -mean(s -> ExponentialFamily.logpdf(ef_candidate, s), samples)

@@ -75,12 +75,9 @@ ExponentialFamilyManifolds.partition_point
 
 ## Custom generic manifolds
 
-`ExponentialFamilyManifolds.jl` introduces additional manifolds not included in `Manifolds.jl`. This is crucial because certain exponential family distributions have natural parameters that require specific manifolds, such as negative definite matrices for the multivariate Gaussian distribution. These manifolds do not implement every operation defined in `ManifoldsBase.jl`, but they do provide the essential operations needed for optimization with `Manopt.jl`.
+`ExponentialFamilyManifolds.jl` introduces additional manifolds not included in `Manifolds.jl`. This is needed because certain exponential family distributions have natural parameters that require specific manifolds, currently the only one such distribution is `Categorical`, that has one of natural parameters as always 0, however there is no manifold that satisfies this property.
 
 ```@docs
-ExponentialFamilyManifolds.ShiftedPositiveNumbers
-ExponentialFamilyManifolds.ShiftedNegativeNumbers
-ExponentialFamilyManifolds.SymmetricNegativeDefinite
 ExponentialFamilyManifolds.SinglePointManifold
 ```
 
@@ -100,16 +97,17 @@ histogram(data, xlim = (0, 1), label = "data", normalize=:pdf)
 
 ```@example optimization
 using Manopt, ForwardDiff, ExponentialFamilyManifolds
+using ManifoldDiff
+import ADTypes: AutoForwardDiff
 
-# cost function
-function f(M, p) 
+function cost(M, p) 
     ef = convert(ExponentialFamilyDistribution, M, p)
     return -sum((d) -> logpdf(ef, d), data)
 end
 
 # gradient function
-function g(M, p)
-    return ForwardDiff.gradient((p) -> f(M, p), p)
+function g(M, p, backend=TangentDiffBackend(AutoForwardDiff()))
+    return ManifoldDiff.gradient(M, (p) -> cost(M, p), p, backend)
 end
 
 M = ExponentialFamilyManifolds.get_natural_manifold(Beta, ())
