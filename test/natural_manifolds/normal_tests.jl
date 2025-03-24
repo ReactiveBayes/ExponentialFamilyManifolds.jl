@@ -46,8 +46,11 @@ end
 
 @testitem "Check MLE works for `MvNormalMeanCovariance`" begin
     include("mle_manifolds_setuptests.jl")
-    @test_broken test_mle_works(;
-        mle_samples=500, ndistributions=3, kl_friendly=false
+    using DifferentiationInterface
+    using FiniteDifferences
+
+    test_mle_works(;
+        mle_samples=500, ndistributions=3, backend_type=AutoFiniteDifferences(central_fdm(5, 1)), kl_friendly=false
     ) do rng
         k = 2
         m = randn(rng, k)
