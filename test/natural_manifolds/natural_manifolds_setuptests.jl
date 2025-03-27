@@ -1,5 +1,5 @@
-
 using StableRNGs, ExponentialFamily, ManifoldsBase, LinearAlgebra
+using Distributions
 
 import ExponentialFamilyManifolds: get_natural_manifold, partition_point
 
@@ -17,5 +17,9 @@ function test_natural_manifold(f; seed=42, ndistributions=100)
         η = partition_point(T, dims, getnaturalparameters(ef), getconditioner(ef))
 
         @test is_point(M, η, error=:error)
+        ef_back = convert(ExponentialFamilyDistribution, M, η)
+        @test getnaturalparameters(ef_back) ≈ getnaturalparameters(ef)
+        @test getconditioner(ef_back) == getconditioner(ef)
+        @test isproper(ef_back) == true
     end
 end

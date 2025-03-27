@@ -5,3 +5,12 @@
         return Binomial(rand(rng, 1:20), rand(rng, 0:0.001:1))
     end
 end
+
+@testitem "Check MLE works for `Binomial`" begin
+    include("mle_manifolds_setuptests.jl")
+    # Use fewer samples/iterations for faster tests with explicit conditioner handling
+    test_mle_works(; mle_samples=200, ndistributions=3) do rng
+        dist = Binomial(rand(rng, 1:20), rand(rng, 0:0.001:1))
+        return dist
+    end
+end

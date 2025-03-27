@@ -15,3 +15,12 @@ Converts the `point` to a compatible representation for the natural manifold of 
 function partition_point(::Type{Poisson}, ::Tuple{}, p, conditioner=nothing)
     return p
 end
+
+"""
+    transform_back!(p, ::NaturalParametersManifold{ℝ, Poisson}, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `Bernoulli`.
+"""
+function transform_back!(p, ::NaturalParametersManifold{ℝ,Poisson}, q)
+    return p .= q
+end

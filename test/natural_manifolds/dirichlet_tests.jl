@@ -6,3 +6,11 @@
         return Dirichlet(10rand(rng, k))
     end
 end
+
+@testitem "Check MLE works for `Dirichlet`" begin
+    include("mle_manifolds_setuptests.jl")
+    # Use fewer samples/iterations for faster tests
+    test_mle_works(; mle_samples=500, ndistributions=3) do rng
+        return Dirichlet(10rand(rng, 3))
+    end
+end

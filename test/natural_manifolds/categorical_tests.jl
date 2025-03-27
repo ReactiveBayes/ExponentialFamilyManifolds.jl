@@ -56,3 +56,11 @@ end
 
     @test all(≈(1), ForwardDiff.gradient(sum, rand(rng, M)))
 end
+
+@testitem "Check MLE works for `Categorical`" begin
+    include("mle_manifolds_setuptests.jl")
+
+    @test_broken test_mle_works(; mle_samples=1000, ndistributions=3) do rng
+        return Categorical(rand(rng, 3))
+    end
+end
