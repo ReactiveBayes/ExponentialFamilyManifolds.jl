@@ -10,7 +10,7 @@ s = ArgParseSettings()
 end
 
 commandline_args = parse_args(s)
-folders_to_format = ["scripts", "src", "test"]
+folders_to_format = ["scripts", "src", "test", "paper_example"]
 
 overwrite = commandline_args["overwrite"]
 formatted = all(

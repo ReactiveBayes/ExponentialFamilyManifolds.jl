@@ -9,7 +9,14 @@ import ADTypes: AutoForwardDiff
 using ManifoldDiff
 import ManifoldDiff: TangentDiffBackend
 
-function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, backend_type = AutoForwardDiff(), kl_friendly=true)
+function test_mle_works(
+    f;
+    seed=42,
+    mle_samples=1000,
+    ndistributions=10,
+    backend_type=AutoForwardDiff(),
+    kl_friendly=true,
+)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
