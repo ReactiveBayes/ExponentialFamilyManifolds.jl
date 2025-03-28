@@ -2,87 +2,76 @@
 \setcounter{page}{1}
 
 \usepackage{amsmath}
+\usepackage{footmisc}
 \usepackage{etoolbox}
 \BeforeBeginEnvironment{lstlisting}{\vspace{-\baselineskip}}
 \AfterEndEnvironment{lstlisting}{\vspace{-\baselineskip}}
 
 % \usepackage{todonotes}
 % \usepackage[disable]{todonotes}
-% \newcommand{\ml}[2][] {\todo[inline,backgroundcolor=orange!20!white, #1]{(ml) #2}}
+
 % \newcommand{\bdv}[2][] {\todo[inline,backgroundcolor=blue!20!white, #1]{(bdv) #2}}
 % \newcommand{\ismail}[2][] {\todo[inline,backgroundcolor=red!20!white, #1]{(ismail) #2}}
 % \newcommand{\dmitry}[2][] {\todo[inline,backgroundcolor=teal!20!white, #1]{(dmitry) #2}}
-
-\newcommand{\code}[1]{\textsf{#1}}
 
 \begin{document}
 \input{header}
 
 \maketitle
 \begin{abstract}
-\texttt{ExponentialFamilyManifolds} implements exponential family natural parameter spaces as Riemannian manifolds, enabling geometric optimization over probability distributions. The package automatically manages parameter constraints, such as ensuring the positive definiteness of normal distribution covariance matrices, while providing advanced optimization techniques by integrating \texttt{ExponentialFamily} with \texttt{Manifolds}. Applications for maximum likelihood estimation and variational inference demonstrate the package's practical utility.
+\texttt{ExponentialFamilyManifolds.jl} implements exponential family natural parameter spaces as Riemannian manifolds, enabling geometric optimization over probability distributions. The package automatically manages parameter constraints, such as ensuring the positive definiteness of normal distribution covariance matrices. By representing exponential family distributions as manifolds that conform to the \texttt{ManifoldsBase.jl} interface, it allows users to leverage optimization techniques from \texttt{Manopt} for these manifolds. Applications in maximum likelihood estimation and variational inference highlight the package's practical utility.
+% while providing advanced optimization techniques by integrating \texttt{ExponentialFamily} with \texttt{Manifolds}. Applications for maximum likelihood estimation and variational inference demonstrate the package's practical utility.
 \end{abstract}
 
 \section{Introduction}
 
-Probabilistic inference problems can often be formulated as optimization problems, such as maximum likelihood estimation (MLE) or variational inference (VI) \cite{blei_variational_2017}. In practice, this often involves optimizing over a space of probability distributions to find one that best fits the data (MLE) or approximates a target distribution (VI). Unfortunately, direct optimization over arbitrary probability distributions is intractable. To address these challenges, we often resort to solutions within parametric families, with the exponential family of distributions being a popular choice. This family includes many common distributions, such as Gaussian, Dirichlet, and Wishart distributions. Any member of this family can be written as
+Probabilistic inference problems can often be formulated as optimization problems, such as maximum likelihood estimation (MLE) or variational inference (VI) \cite{blei_variational_2017}. In practice, this often involves optimizing over a space of probability distributions to find one that best fits the data (MLE) or approximates a target distribution (VI). Unfortunately, direct optimization over arbitrary probability distributions is intractable. To address these challenges, we often resort to solutions within parametric families, with the exponential family of distributions being a popular choice for its ability to transform inference into convex optimization problems and its natural emergence from maximum entropy principles \cite{wainwright_graphical_2008}. As detailed in \cite[Chapter~3]{wainwright_graphical_2008}, this family not only includes many common distributions like Gaussian, Dirichlet, and Wishart, but also provides a unified mathematical framework for representing graphical models while ensuring distributions maintain maximal uncertainty consistent with observed data. Formally, a distribution is a member of the exponential family if there exists a parameter vector $\eta$ such that its probability density can be written as
 \begin{equation*}\label{eq:exponential-family}
 p(x|\eta) = h(x)\exp\left(\eta^\top T(x) - A(\eta)\right),
 \end{equation*}
-where $\eta$ are the natural parameters. Although this parametrization makes optimization more tractable, challenges remain due to the geometric constraints on the parameter space. For example, the covariance matrices of a Normal distribution must be positive definite.
+where $\eta$ is called natural parameter. Although this parametrization makes optimization more tractable, challenges remain due to the geometric constraints on the parameter space. For example, the natural parameter vector $\eta$ for a multivariate Normal distribution includes a matrix component proportional to the negative precision matrix.
 
-We present \texttt{ExponentialFamilyManifolds}, a Julia \cite{bezanson2017julia} package that addresses these challenges by implementing the parameter spaces as Riemannian manifolds. By bridging \texttt{ExponentialFamily} \cite{Senoz_ExponentialFamily_jl_2023} and \texttt{Manifolds} \cite{axen_manifoldsjl_2023}, the new package enables geometrically aware optimization techniques to handle parameter constraints automatically using \texttt{Manopt} \cite{bergmann_manoptjl_2022}.
+We present \texttt{ExponentialFamilyManifolds.jl}, a Julia \cite{bezanson2017julia} package that addresses these challenges by implementing the parameter spaces as Riemannian manifolds. By bridging \texttt{ExponentialFamily.jl} \cite{Senoz_ExponentialFamily_jl_2023} with the manifold interface from \texttt{ManifoldsBase.jl} \cite{axen_manifoldsjl_2023} and concrete manifolds from \texttt{Manifolds.jl}, the new package enables geometrically aware optimization techniques to handle parameter constraints automatically using \texttt{Manopt.jl} \cite{bergmann_manoptjl_2022}.
 
-\section{A tour through \texttt{ExponentialFamilyManifolds}}
-In this section, we introduce the \code{NaturalParametersManifold} interface, the core functionality of our package. We then demonstrate how this interface can be applied to optimization tasks such as maximum likelihood estimation and variational inference.
+\section{A tour through \texttt{ExponentialFamilyManifolds.jl}}
+In this section, we introduce the \texttt{NaturalParametersManifold} interface, the core functionality of our package. We then demonstrate how this interface can be applied to optimization tasks such as maximum likelihood estimation and variational inference.
 
-\subsection{The core interface: \code{NaturalParametersManifold}}
+\subsection{The core interface: \texttt{NaturalParametersManifold}}
 
-The \code{NaturalParametersManifold} defines a generic interface to construct and work with the natural parameters space of an arbitrary distribution from the exponential family. For example, the natural parameters of the Beta distribution form the manifold
+A key feature of the core interface \texttt{NaturalParametersManifold} from \texttt{ExponentialFamilyManifolds.jl} is that any point on a manifold—used within \texttt{Manopt.jl}—can also be viewed as an exponential-family distribution. This dual view means we can invoke typical distribution operations (e.g., \texttt{rand} or \texttt{logpdf}) on the same object that supports geometric operations like \texttt{retract}. In other words, we can both \emph{manipulate} a point as part of a manifold-based optimization routine, and use it to \emph{evaluate} functions that treat a point as a distribution for operations like likelihood and sampling.
+
+The \texttt{NaturalParametersManifold} is implemented as a subtype of \texttt{ManifoldsBase.AbstractDecoratorManifold}, defining a generic interface to construct and work with the natural-parameter space of an arbitrary exponential-family distribution. This "decorator" approach allows us to extend functionality of a base manifold while preserving its core operations. For example, the natural parameters of the Beta distribution form the manifold
+
 \[
 \mathcal{M}_{\mathrm{Beta}} \;=\; (-1,\infty) \times (-1,\infty)\,,
 \]
-which, through \texttt{Manifolds}, can be represented as follows\footnote{\texttt{ShiftedPositiveNumbers} is a convenience wrapper around the \texttt{PositiveNumbers} manifold implemented in \texttt{ExponentialFamilyManifolds} to shift the domain by a constant.}
-\begin{lstlisting}[language=Julia]
-ProductManifold(
-    ShiftedPositiveNumbers(static(-1)),
-    ShiftedPositiveNumbers(static(-1))
-)
-\end{lstlisting} \texttt{ExponentialFamilyManifolds} provides the following method \begin{lstlisting}[language=Julia]
+
+which can be represented using \texttt{ProductManifold} from \texttt{ManifoldsBase.jl} together with concrete manifolds from \texttt{Manifolds.jl} through coordinate transformations, which we call \texttt{partition\_point} and \texttt{transform\_back}; the first one takes a natural parameter and transforms it into the corresponding manifold (in the Beta case shifting it by 1), and the second one is the inverse operation.
+
+\texttt{ExponentialFamilyManifolds.jl} offers an interface to construct \texttt{NaturalParametersManifold} objects \begin{lstlisting}[language=Julia]
 M = get_natural_manifold(Beta, ())
-\end{lstlisting} to construct this manifold. Here, \texttt{M} is the manifold corresponding  to 
-\(\mathcal{M}_{\mathrm{Beta}}\,.\) Once \texttt{M} is obtained, one can sample a vector of natural parameters on \texttt{M} 
-and convert points from it to an instance of \code{ExponentialFamilyDistribution}, 
-the main interface in \texttt{ExponentialFamily}. We highlight the \code{retract} method in the \code{NaturalParametersManifold} interface 
-because gradient-based optimization requires a mechanism to move in a given direction (a tangent vector) without leaving the manifold. 
-For instance, to move from a point \(\eta\) in the direction \code{X} can be implemented in the following way
-\begin{lstlisting}[language=Julia]
-ζ = retract(M, η, X)
-\end{lstlisting}
-This step enforces constraints automatically (e.g., \ \(\zeta \in \mathcal{M}_{\mathrm{Beta}}\)),
-freeing practitioners from manual checks of validity.
+\end{lstlisting} The method takes a distribution type, a dimensions tuple (empty for univariate distributions, or e.g., \texttt{(3,)} for 3D multivariate normals), and an optional conditioner. This produces a manifold \texttt{M} on which each point corresponds to valid parameters of the Beta distribution. To obtain a standard \texttt{ExponentialFamilyDistribution} object from a point \texttt{p} on \texttt{M}, we use \texttt{convert(EFD, M, p)}\footnote{\label{foot-efd}Note that to make the listings smaller in place of \texttt{ExponentialFamilyDistribution}, we write \texttt{EFD}.} method. Internally, \texttt{convert} applies \texttt{transform\_back(M, p)} to recover the usual parameter vector before constructing the distribution. An example of this can be seen in Listing~\ref{lst:mle}, where we use \texttt{convert} inside an MLE routine.
 
-\subsection{Using \texttt{ExponentialFamilyManifolds} for Optimization} \label{sec:using_efm}
+\subsection{Using \texttt{ExponentialFamilyManifolds.jl} for Optimization} \label{sec:using_efm}
 
-\texttt{ExponentialFamilyManifolds} transforms distribution-approximation tasks 
+\texttt{ExponentialFamilyManifolds.jl} transforms distribution-approximation tasks 
 (e.g., maximum likelihood estimation or variational inference) into manifold-optimization problems, 
 allowing users to focus solely on defining an objective function. 
-Listing~\ref{lst:generic_opt} demonstrates a generic workflow for performing gradient-based optimization on a manifold \code{M}: 
-first, compute the gradient of the objective \code{f} using \texttt{ForwardDiff} \cite{revels_forward-mode_2016}, 
-and then execute \code{gradient\_descent} from \texttt{Manopt}. 
-The \code{gradient\_descent} function iteratively applies the \code{retract} method to update parameters along the gradient direction.
+Listing~\ref{lst:generic_opt} demonstrates a generic workflow for performing gradient-based optimization on a manifold \texttt{M}: 
+first, compute the gradient of the objective \texttt{f} using \texttt{ManifoldDiff.jl}, which provides differentials for functions defined on manifolds that implement the \texttt{ManifoldsBase.jl} interface \cite{axen_manifoldsjl_2023}, 
+and then execute \texttt{gradient\_descent} from \texttt{Manopt.jl}. 
+The \texttt{gradient\_descent} function iteratively applies the \texttt{retract} method to update parameters along the gradient direction.
 \begin{lstlisting}[language=Julia, caption={Generic manifold-based optimization}, label={lst:generic_opt}]
 function optimize(M, f, η_init)
-    g(M, η) = ForwardDiff.gradient(
-            η -> f(M, η), η
-    )
+    # compute the Riemannian gradient
+    # ... your differentiation backend here
+    g(M, η) = ManifoldDiff.gradient(M, f, η, backend)
     return gradient_descent(M, f, g, η_init)
 end
 \end{lstlisting}
 \vspace{1em}
-% \dmitry{What is a \textit{solver}?}
 
-To perform MLE and VI, we only need to define their respective objective functions, the negative log-likelihood for MLE, and the Free Energy for VI, and then use the generic \code{optimize} function to carry on the inference\footnote{A complete working implementations is available at \url{https://github.com/ReactiveBayes/ExponentialFamilyManifolds.jl/blob/paper/paper_example/paper_example.jl}}. The objective functions for MLE and VI are provided in listings~\ref{lst:mle} and \ref{lst:vi}, respectively (note that to make the listings smaller in place of \code{ExponentialFamilyDistribution}, we write \code{EFD}). Figure~\ref{fig:comparisons} shows the results of both approaches. The upper panel demonstrates how MLE and VI produce different approximations to the same target distribution, while the bottom panel compares different families of the approximating distribution.
+To perform MLE and VI, we only need to define their respective objective functions, the negative log-likelihood for MLE, and the Free Energy for VI, and then use the generic \texttt{optimize} function to perform on the inference\footnote{The complete example is implemented in the code at \url{https://github.com/ReactiveBayes/ExponentialFamilyManifolds.jl/blob/paper/paper_example/paper_example.jl}.}. The objective functions for MLE and VI are provided in listings~\ref{lst:mle} and \ref{lst:vi}, respectively\footref{foot-efd}. Figure~\ref{fig:comparisons} shows the results of both approaches. The upper panel demonstrates how MLE and VI produce different approximations to the same target distribution, while the bottom panel compares different families of the approximating distribution.
 \vspace{-0.5em}
 \begin{lstlisting}[language=Julia, caption={Objective functions for MLE}, label={lst:mle}]
 function f_mle(M, η, samples)
@@ -100,14 +89,14 @@ function f_vi(M, η, t, size)
 end
 \end{lstlisting}
 \vspace{1em}
-The \code{optimize} (the Listing \ref{lst:generic_opt}) function demonstrates how gradient descent can be implemented using the \code{NaturalParametersManifold} interface. Additionally, it can be easily adapted to use the natural gradient \cite{amari_natural_1998} by incorporating the Fisher information into the gradient computations, as shown in Listing~\ref{lst:natgrad}. This flexibility allows researchers to perform natural MLE or natural VI by simply reusing the objective functions.
+The \texttt{optimize} (the Listing \ref{lst:generic_opt}) function demonstrates how gradient descent can be implemented using the \texttt{NaturalParametersManifold} interface. Additionally, the approach can be easily adapted to use the natural gradient \cite{amari_natural_1998} by incorporating the Fisher information into the gradient computations, as shown in Listing~\ref{lst:natgrad}.
 
-\begin{lstlisting}[language=Julia, label={lst:natgrad}, caption={Implementing the natural gradient}]
-function natural_gradient(M, η, f)
-    q = convert(EFD, M, η)
+\begin{lstlisting}[language=Julia, label={lst:natgrad}, caption={Computing the natural gradient with \texttt{ForwardDiff.jl} \cite{revels_forward-mode_2016}}]
+function natural_gradient(M, p, f, grad)
+    q = convert(EFD, M, p)
     F = fisherinformation(q)
     grad = ForwardDiff.gradient(
-        x -> f(M, x), η
+        x -> f(M, p), p
     )
     return F \ grad
 end
@@ -125,7 +114,7 @@ end
 \end{figure}
 
 \section{Future work}
-While most of the distributions in this package use product manifold geometry, the Fisher-Rao metric~\cite{amari_natural_1998} provides a more suitable geometry for exponential families, potentially leading to more robust optimization (see Listing~\ref{lst:natgrad}). Additionally, extending the package to support mixture families of exponential family distributions could enhance its capabilities since, for example, mixture models can better capture multiple modes in variational inference.
+While most of the distributions in this package use product manifold geometry, the Fisher-Rao metric~\cite{amari_natural_1998} provides a more suitable geometry for exponential families, potentially leading to more robust optimization (see Listing~\ref{lst:natgrad}). Additionally, extending the package to support mixture families of exponential family distributions could enhance its capabilities since, for example, mixture models can better capture multiple modes in VI.
 
 
 \bibliography{ref}
