@@ -11,6 +11,53 @@
 
 Refer to the documentation for more information and optimization examples.
 
+## Getting Started
+
+First, install the package:
+
+```julia
+using Pkg
+Pkg.add("ExponentialFamilyManifolds")
+```
+
+To use the package, you'll need to have the distribution types exported from `ExponentialFamily.jl` and methods from `Manifolds.jl`. Here's a basic example showing how to work with a Beta distribution:
+
+```julia
+using ExponentialFamily, ExponentialFamilyManifolds, Manifolds
+
+# Create a Beta distribution
+dist = Beta(2.0, 3.0)
+
+# Convert to exponential family form
+ef = convert(ExponentialFamilyDistribution, dist)
+
+# Get the natural manifold for the Beta distribution
+M = ExponentialFamilyManifolds.get_natural_manifold(Beta, ())
+
+# Get natural parameters
+η = getnaturalparameters(ef)
+
+# Create a point on the manifold
+p = ExponentialFamilyManifolds.partition_point(M, η)
+
+# Create a tangent vector at point p
+X = rand(M, vector_at = p)
+
+# Move along the manifold in direction X with step size 0.1
+q = Manifolds.retract_fused(M, p, X, 0.1)
+
+# Convert back to exponential family distribution
+ef_new = convert(ExponentialFamilyDistribution, M, q)
+```
+
+For a more advanced example, you can use `Manopt.jl` to optimize the natural parameters of exponential family distributions. Here's what you can do:
+
+- Optimize maximum likelihood estimation
+- Work with different cost functions on the manifold
+- Use various optimization algorithms (gradient descent, conjugate gradient, etc.)
+
+Check out our [optimization example](https://reactivebayes.github.io/ExponentialFamilyManifolds.jl/dev/#Optimization-example) in the documentation to learn more.
+
 ## Contributing and Support
 
 We welcome contributions and questions from the community! Here's how you can get involved:
