@@ -3,14 +3,14 @@
 \bibitem{amari_natural_1998}
 Shun-ichi Amari.
 Natural {Gradient} {Works} {Efficiently} in {Learning}.
-{\em Neural Computation}, 10(2):251--276, January 1998.
+{\em Neural Computation}, 10(2):251--276, 1998.
 \href{http://dx.doi.org/10.1162/089976698300017746}{doi:10.1162/089976698300017746}.
 
 \bibitem{axen_manifoldsjl_2023}
 Seth~D. Axen, Mateusz Baran, Ronny Bergmann, and Krzysztof Rzecki.
 Manifolds.{Jl}: {An} {Extensible} {Julia} {Framework} for {Data} {Analysis} on
   {Manifolds}.
-{\em ACM Transactions on Mathematical Software}, 49(4), December 2023.
+{\em ACM Transactions on Mathematical Software}, 49(4), 2023.
 \href{http://dx.doi.org/10.1145/3618296}{doi:10.1145/3618296}.
 
 \bibitem{bergmann_manoptjl_2022}
@@ -18,7 +18,6 @@ Ronny Bergmann.
 Manopt.jl: {Optimization} on {Manifolds} in {Julia}.
 {\em Journal of Open Source Software}, 7(70):3866, 2022.
 \href{http://dx.doi.org/10.21105/joss.03866}{doi:10.21105/joss.03866}.
-Publisher: The Open Journal.
 
 \bibitem{bezanson2017julia}
 Jeff Bezanson, Alan Edelman, Stefan Karpinski, and Viral~B Shah.
@@ -29,19 +28,24 @@ Julia: A fresh approach to numerical computing.
 \bibitem{blei_variational_2017}
 David~M. Blei, Alp Kucukelbir, and Jon~D. McAuliffe.
 Variational {Inference}: {A} {Review} for {Statisticians}.
-{\em Journal of the American Statistical Association}, 112(518):859--877, April
-  2017.
+{\em Journal of the American Statistical Association}, 112(518):859--877, 2017.
 \href{http://dx.doi.org/10.1080/01621459.2017.1285773}{doi:10.1080/01621459.2017.1285773}.
-Publisher: ASA Website \_eprint: https://doi.org/10.1080/01621459.2017.1285773.
 
 \bibitem{revels_forward-mode_2016}
 Jarrett Revels, Miles Lubin, and Theodore Papamarkou.
 Forward-{Mode} {Automatic} {Differentiation} in {Julia}.
-{\em arXiv:1607.07892 [cs]}, July 2016.
-arXiv: 1607.07892.
+{\em arXiv:1607.07892 [cs]}, 2016.
+
+\bibitem{wainwright_graphical_2008}
+Martin~J. Wainwright and Michael~I. Jordan.
+Graphical models, exponential families, and variational inference.
+{\em Foundations and Trends in Machine Learning}, 1(1):1--305, 2008.
+\href{http://dx.doi.org/10.1561/2200000001}{doi:10.1561/2200000001}.
 
 \bibitem{Senoz_ExponentialFamily_jl_2023}
 İsmail Şenöz, Dmitry Bagaev, and Mykola Lukashchuk.
-{ExponentialFamily.jl}, October 2023.
+{ExponentialFamily.jl}.
+{\em GitHub repository}, 2023.
+\href{http://dx.doi.org/10.5281/zenodo.15101588}{doi:10.5281/zenodo.15101588}.
 
 \end{thebibliography}
