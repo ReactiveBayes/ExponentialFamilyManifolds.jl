@@ -40,7 +40,7 @@ In this section, we introduce the \texttt{NaturalParametersManifold} interface, 
 
 A key feature of the core interface \texttt{NaturalParametersManifold} from \texttt{ExponentialFamilyManifolds.jl} is that any point on a manifold—used within \texttt{Manopt.jl}—can also be viewed as an exponential-family distribution. This dual view means we can invoke typical distribution operations (e.g., \texttt{rand} or \texttt{logpdf}) on the same object that supports geometric operations like \texttt{retract}. In other words, we can both \emph{manipulate} a point as part of a manifold-based optimization routine, and use it to \emph{evaluate} functions that treat a point as a distribution for operations like likelihood and sampling.
 
-The \texttt{NaturalParametersManifold} is implemented as a subtype of \texttt{ManifoldsBase.AbstractDecoratorManifold}, defining a generic interface to construct and work with the natural-parameter space of an arbitrary exponential-family distribution. This "decorator" approach allows us to extend the functionality of a base manifold while preserving its core operations. For example, the natural parameters of the Beta distribution form the manifold
+The \texttt{NaturalParametersManifold} is implemented as a subtype of \texttt{ManifoldsBase.AbstractDecoratorManifold}, defining a generic interface to construct and work with the natural-parameter space of an arbitrary exponential-family distribution. This ``decorator'' approach allows us to extend the functionality of a base manifold while preserving its core operations. For example, the natural parameters of the Beta distribution form the manifold
 
 \[
 \mathcal{M}_{\mathrm{Beta}} \;=\; (-1,\infty) \times (-1,\infty)\,,
