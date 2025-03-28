@@ -7,10 +7,7 @@
 end
 
 @testitem "Check MLE works for `Chisq`" begin
-    include("natural_manifolds_setuptests.jl")
-    using Manopt
-    import Distributions: kldivergence, Distribution
-
+    include("mle_manifolds_setuptests.jl")
     # Use fewer samples/iterations for faster tests
     test_mle_works(; mle_samples=200, ndistributions=3) do rng
         return Chisq(10rand(rng))

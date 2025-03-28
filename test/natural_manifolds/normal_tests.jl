@@ -30,19 +30,14 @@ end
 end
 
 @testitem "Check MLE works for `MvNormalMeanScalePrecision`" begin
-    include("natural_manifolds_setuptests.jl")
-    using Manopt
-    import Distributions: kldivergence, Distribution
-
+    include("mle_manifolds_setuptests.jl")
     test_mle_works(; mle_samples=1000, ndistributions=3) do rng
         return MvNormalMeanScalePrecision(randn(rng, 2), 2)
     end
 end
 
 @testitem "Check MLE works for `NormalMeanVariance`" begin
-    include("natural_manifolds_setuptests.jl")
-    using Manopt
-    import Distributions: kldivergence, Distribution
+    include("mle_manifolds_setuptests.jl")
 
     test_mle_works(; mle_samples=500, ndistributions=3) do rng
         return NormalMeanVariance(randn(rng), 1 / 2)
@@ -50,12 +45,12 @@ end
 end
 
 @testitem "Check MLE works for `MvNormalMeanCovariance`" begin
-    include("natural_manifolds_setuptests.jl")
-    using Manopt
-    import Distributions: kldivergence, Distribution
+    include("mle_manifolds_setuptests.jl")
+    using DifferentiationInterface
+    using FiniteDifferences
 
-    @test_broken test_mle_works(;
-        mle_samples=500, ndistributions=3, kl_friendly=false
+    test_mle_works(;
+        mle_samples=500, ndistributions=3, backend_type=AutoFiniteDifferences(central_fdm(5, 1)), kl_friendly=false
     ) do rng
         k = 2
         m = randn(rng, k)

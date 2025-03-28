@@ -2,9 +2,6 @@ module ExponentialFamilyManifolds
 
 using BayesBase, ExponentialFamily, ManifoldsBase, Manifolds, Random, LinearAlgebra
 
-include("symmetric_negative_definite.jl")
-include("shifted_negative_numbers.jl")
-include("shifted_positive_numbers.jl")
 include("single_point_manifold.jl")
 include("natural_manifolds.jl")
 

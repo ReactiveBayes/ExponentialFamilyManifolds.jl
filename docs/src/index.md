@@ -71,16 +71,15 @@ ExponentialFamilyManifolds.ManifoldsBase.submanifold_component(p, 2)
 
 ```@docs
 ExponentialFamilyManifolds.partition_point
+ExponentialFamilyManifolds.transform_back!
+ExponentialFamilyManifolds.transform_back
 ```
 
 ## Custom generic manifolds
 
-`ExponentialFamilyManifolds.jl` introduces additional manifolds not included in `Manifolds.jl`. This is crucial because certain exponential family distributions have natural parameters that require specific manifolds, such as negative definite matrices for the multivariate Gaussian distribution. These manifolds do not implement every operation defined in `ManifoldsBase.jl`, but they do provide the essential operations needed for optimization with `Manopt.jl`.
+`ExponentialFamilyManifolds.jl` introduces additional manifolds not included in `Manifolds.jl`. This is needed because certain exponential family distributions have natural parameters that require specific manifolds, currently the only one such distribution is `Categorical`, that has one of natural parameters as always 0, however there is no manifold that satisfies this property.
 
 ```@docs
-ExponentialFamilyManifolds.ShiftedPositiveNumbers
-ExponentialFamilyManifolds.ShiftedNegativeNumbers
-ExponentialFamilyManifolds.SymmetricNegativeDefinite
 ExponentialFamilyManifolds.SinglePointManifold
 ```
 
@@ -93,28 +92,29 @@ using ExponentialFamily, Distributions, Plots, StableRNGs
 
 rng  = StableRNG(42)
 dist = Beta(24, 6)
-data = rand(rng, dist, 200)
+data = rand(rng, dist, 500)
 
 histogram(data, xlim = (0, 1), label = "data", normalize=:pdf)
 ```
 
 ```@example optimization
 using Manopt, ForwardDiff, ExponentialFamilyManifolds
+using ManifoldDiff
+import ADTypes: AutoForwardDiff
 
-# cost function
-function f(M, p) 
+function cost(M, p) 
     ef = convert(ExponentialFamilyDistribution, M, p)
     return -sum((d) -> logpdf(ef, d), data)
 end
 
 # gradient function
-function g(M, p)
-    return ForwardDiff.gradient((p) -> f(M, p), p)
+function g(M, p, backend=TangentDiffBackend(AutoForwardDiff()))
+    return ManifoldDiff.gradient(M, (p) -> cost(M, p), p, backend)
 end
 
 M = ExponentialFamilyManifolds.get_natural_manifold(Beta, ())
 p = rand(rng, M)
-q = gradient_descent(M, f, g, p)
+q = gradient_descent(M, cost, g, p)
 
 q_ef = convert(ExponentialFamilyDistribution, M, q)
 q_η  = getnaturalparameters(q_ef)
@@ -146,12 +146,6 @@ The difference in KL is quite small as well:
 using Test #hide
 @test kldivergence(convert(Distribution, q_ef), dist) < 4e-3 #hide
 kldivergence(convert(Distribution, q_ef), dist)
-```
-
-# Helpers 
-
-```@docs 
-ExponentialFamilyManifolds.Negated
 ```
 
 # Index
