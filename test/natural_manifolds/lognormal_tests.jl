@@ -10,6 +10,6 @@ end
     include("mle_manifolds_setuptests.jl")
     # Use fewer samples/iterations for faster tests
     test_mle_works(; mle_samples=500, ndistributions=3) do rng
-        return LogNormal(randn(rng), 1)
+        return LogNormal(randn(rng), rand(rng) + 1)
     end
 end
