@@ -4,7 +4,7 @@
 Get the natural manifold base for the `LogNormal` distribution.
 """
 function get_natural_manifold_base(::Type{LogNormal}, ::Tuple{}, conditioner=nothing)
-    return ProductManifold(Euclidean(1), ShiftedNegativeNumbers(static(0)))
+    return ProductManifold(Euclidean(1), PositiveVectors(1))
 end
 
 """
@@ -13,5 +13,16 @@ end
 Converts the `point` to a compatible representation for the natural manifold of type `LogNormal`.
 """
 function partition_point(::Type{LogNormal}, ::Tuple{}, p, conditioner=nothing)
-    return ArrayPartition(view(p, 1:1), view(p, 2:2))
+    return ArrayPartition(view(p, 1:1), -view(p, 2:2))
+end
+
+"""
+    transform_back!(p, ::NaturalParametersManifold{LogNormal}, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `LogNormal`.
+"""
+function transform_back!(p, ::NaturalParametersManifold{ℝ,LogNormal}, q)
+    p[1:1] .= view(q, 1:1)
+    p[2:2] .= view(-q, 2:2)
+    return p
 end

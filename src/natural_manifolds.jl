@@ -79,12 +79,31 @@ function partition_point(M::NaturalParametersManifold, p)
     return partition_point(exponential_family_typetag(M), getdims(M), p, getconditioner(M))
 end
 
+"""
+    transform_back!(p, ::NaturalParametersManifold, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `T`.
+"""
+function transform_back!(_, ::NaturalParametersManifold{𝔽,T}, q) where {𝔽,T}
+    return error(
+        "You need to implement `transform_back!` for your specific $T of the exponential family distribution",
+    )
+end
+
+"""
+    transform_back(p, ::NaturalParametersManifold, q)
+
+Transforms the `q` to a compatible representation for the exponential family distribution of type `T`.
+"""
+function transform_back(M::NaturalParametersManifold{𝔽,T}, q) where {𝔽,T}
+    p = deepcopy(q)
+    return transform_back!(p, M, q)
+end
+
 function Base.convert(
     ::Type{ExponentialFamilyDistribution}, M::NaturalParametersManifold, p
 )
-    # The extra `nothing` at the end bypasses the check that the `p` is a 
-    # valid vector of parameters
     return ExponentialFamilyDistribution(
-        exponential_family_typetag(M), p, getconditioner(M), nothing
+        exponential_family_typetag(M), transform_back(M, p), getconditioner(M), nothing
     )
 end

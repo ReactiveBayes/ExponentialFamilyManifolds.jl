@@ -76,3 +76,25 @@
         end
     end
 end
+
+@testitem "Test default error for transform_back! " begin
+    using ExponentialFamilyManifolds
+    using Distributions
+    using Manifolds
+    import ExponentialFamily: ExponentialFamilyDistribution
+
+    struct CustomDistribution end
+
+    ef = ExponentialFamilyDistribution(CustomDistribution, ())
+
+    function ExponentialFamilyManifolds.get_natural_manifold_base(::Type{CustomDistribution}, ::Tuple{}, conditioner=nothing)
+        return Euclidean(1)
+    end
+
+    M = ExponentialFamilyManifolds.get_natural_manifold(CustomDistribution, ())
+    p = rand(M)
+    q = rand(M)
+
+    @test_throws ErrorException ExponentialFamilyManifolds.transform_back!(p, M, q)
+    @test occursin("You need to implement `transform_back!` for your specific", try ExponentialFamilyManifolds.transform_back!(p, M, q) catch e e.msg end)
+end
