@@ -7,11 +7,9 @@
 end
 
 @testitem "Check MLE works for `Gamma`" begin
-    include("natural_manifolds_setuptests.jl")
-    using Manopt
-    import Distributions: kldivergence, Distribution
+    include("mle_manifolds_setuptests.jl")
 
-    @test_broken test_mle_works(; mle_samples=500, ndistributions=3) do rng
-        return Gamma(rand(rng), 10rand(rng))
+    test_mle_works(; mle_samples=500, ndistributions=3) do rng
+        return Gamma(rand(rng), rand(rng))
     end
 end

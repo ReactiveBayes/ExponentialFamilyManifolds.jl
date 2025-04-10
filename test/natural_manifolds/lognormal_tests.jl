@@ -7,12 +7,9 @@
 end
 
 @testitem "Check MLE works for `LogNormal`" begin
-    include("natural_manifolds_setuptests.jl")
-    using Manopt
-    import Distributions: kldivergence, Distribution
-
+    include("mle_manifolds_setuptests.jl")
     # Use fewer samples/iterations for faster tests
     test_mle_works(; mle_samples=500, ndistributions=3) do rng
-        return LogNormal(randn(rng), rand(rng))
+        return LogNormal(randn(rng), rand(rng) + 1)
     end
 end
