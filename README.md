@@ -6,6 +6,7 @@
 [![Coverage](https://codecov.io/gh/ReactiveBayes/ExponentialFamilyManifolds.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/ReactiveBayes/ExponentialFamilyManifolds.jl)
 [![PkgEval](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/E/ExponentialFamilyManifolds.svg)](https://JuliaCI.github.io/NanosoldierReports/pkgeval_badges/E/ExponentialFamilyManifolds.html)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
+[![DOI](https://zenodo.org/badge/813036955.svg)](https://doi.org/10.5281/zenodo.15196175)
 
 `ExponentialFamilyManifolds.jl` provides implementations of manifolds for the natural parameters of exponential family distributions, using `Manifolds.jl`. These manifolds are compatible with `ManifoldsBase.jl`, enabling optimization of the natural parameters of exponential family distributions using `Manopt.jl`.
 
