@@ -1,7 +1,7 @@
 name = "ExponentialFamilyManifolds"
 uuid = "5c9727c4-3b82-4ab3-b165-76e2eb971b08"
 authors = ["Mykola Lukashchuk <m.lukashchuk@tue.nl>", "Dmitry Bagaev <bvdmitri@gmail.com>", "Albert Podusenko <albert@lazydynamics.com>"]
-version = "3.0.0"
+version = "3.0.1"
 
 [deps]
 BayesBase = "b4ee3484-f114-42fe-b91c-797d54a0c67e"
