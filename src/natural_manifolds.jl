@@ -20,9 +20,11 @@ getconditioner(M::NaturalParametersManifold) = M.conditioner
 
 # The `NaturalParametersManifold` simply adds extra properties to the `base` and 
 # acts as a "decorator"
-@inline ManifoldsBase.active_traits(f::F, ::NaturalParametersManifold, ::Any...) where {F} =
-    ManifoldsBase.IsExplicitDecorator()
 @inline ManifoldsBase.decorated_manifold(M::NaturalParametersManifold) = M.base
+
+# Forward all functions by default to the decorated base manifold
+@inline ManifoldsBase.get_forwarding_type(::NaturalParametersManifold, ::Any) =
+    ManifoldsBase.SimpleForwardingType()
 
 function ExponentialFamily.exponential_family_typetag(
     ::NaturalParametersManifold{𝔽,T}
