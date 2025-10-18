@@ -3,7 +3,6 @@
 
     import ExponentialFamilyManifolds:
         NaturalParametersManifold,
-        ShiftedPositiveNumbers,
         get_natural_manifold,
         get_natural_manifold_base,
         partition_point,
