@@ -23,10 +23,8 @@ getconditioner(M::NaturalParametersManifold) = M.conditioner
 @inline ManifoldsBase.decorated_manifold(M::NaturalParametersManifold) = M.base
 
 # Forward all functions by default to the decorated base manifold
-@inline ManifoldsBase.get_forwarding_type(::NaturalParametersManifold, ::Any) =
-    ManifoldsBase.SimpleForwardingType()
-@inline ManifoldsBase.get_forwarding_type(::NaturalParametersManifold, ::Any, _) =
-ManifoldsBase.SimpleForwardingType()
+@inline ManifoldsBase.get_forwarding_type(::NaturalParametersManifold, ::Any) = ManifoldsBase.SimpleForwardingType()
+@inline ManifoldsBase.get_forwarding_type(::NaturalParametersManifold, ::Any, _) = ManifoldsBase.SimpleForwardingType()
 
 function ExponentialFamily.exponential_family_typetag(
     ::NaturalParametersManifold{𝔽,T}

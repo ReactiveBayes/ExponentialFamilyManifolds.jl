@@ -19,7 +19,7 @@ function partition_point(
     ::Type{ExponentialFamily.WishartFast}, dims::Tuple{Int,Int}, p, conditioner=nothing
 )
     k = first(dims)
-    return ArrayPartition(view(p, 1:1), -reshape(view(p, 2:(1 + k^2)), (k, k)))
+    return ArrayPartition(view(p, 1:1), -reshape(view(p, 2:(1 + k ^ 2)), (k, k)))
 end
 
 """
