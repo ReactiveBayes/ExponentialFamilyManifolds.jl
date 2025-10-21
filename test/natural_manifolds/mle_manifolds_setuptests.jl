@@ -9,7 +9,14 @@ import ADTypes: AutoForwardDiff
 using ManifoldDiff
 import ManifoldDiff: TangentDiffBackend
 
-function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, backend_type = AutoForwardDiff(), kl_friendly=true)
+function test_mle_works(
+    f;
+    seed=42,
+    mle_samples=1000,
+    ndistributions=10,
+    backend_type=AutoForwardDiff(),
+    kl_friendly=true,
+)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -33,7 +40,7 @@ function test_mle_works(f; seed=42, mle_samples=1000, ndistributions=10, backend
         end
 
         stepsize = DistanceOverGradients()
-        p_mle = gradient_descent(M, cost, grad, rand(rng, M), stepsize = stepsize)
+        p_mle = gradient_descent(M, cost, grad, rand(rng, M); stepsize=stepsize)
         ef_mle = convert(ExponentialFamilyDistribution, M, p_mle)
         if kl_friendly
             kl_div = kldivergence(convert(Distribution, ef_mle), distribution)

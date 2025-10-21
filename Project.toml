@@ -35,6 +35,7 @@ DifferentiationInterface = "a0c0ee7d-e4b9-4e03-894e-1c5f64a51d63"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
+Hwloc = "0e44f5e4-bd66-52a0-8798-143a42290a1d"
 JET = "c3a54625-cd67-489e-a8e7-0a5a0ff4e31b"
 ManifoldDiff = "af67fdf4-a580-4b9f-bbec-742ef357defd"
 Manopt = "0fc0a36d-df90-57f3-8f93-d78a9fc72bb5"
@@ -44,4 +45,4 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["ADTypes", "Aqua", "DifferentiationInterface", "Distributions", "JET", "Test", "ReTestItems", "StableRNGs", "StaticArrays", "ManifoldDiff", "Manopt", "ForwardDiff", "FiniteDifferences"]
+test = ["ADTypes", "Aqua", "DifferentiationInterface", "Distributions", "Hwloc", "JET", "Test", "ReTestItems", "StableRNGs", "StaticArrays", "ManifoldDiff", "Manopt", "ForwardDiff", "FiniteDifferences"]

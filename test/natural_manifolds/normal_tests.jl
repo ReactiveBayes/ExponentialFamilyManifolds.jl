@@ -50,7 +50,10 @@ end
     using FiniteDifferences
 
     test_mle_works(;
-        mle_samples=500, ndistributions=3, backend_type=AutoFiniteDifferences(central_fdm(5, 1)), kl_friendly=false
+        mle_samples=500,
+        ndistributions=3,
+        backend_type=AutoFiniteDifferences(central_fdm(5, 1)),
+        kl_friendly=false,
     ) do rng
         k = 2
         m = randn(rng, k)
