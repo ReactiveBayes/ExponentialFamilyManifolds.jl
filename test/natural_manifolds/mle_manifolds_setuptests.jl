@@ -1,5 +1,5 @@
 using StableRNGs, ExponentialFamily, ManifoldsBase, LinearAlgebra
-using Distributions
+using Distributions, Random
 
 using Manopt
 import Distributions: kldivergence, Distribution
@@ -43,6 +43,11 @@ function test_mle_works(
         p_mle = gradient_descent(M, cost, grad, rand(rng, M); stepsize=stepsize)
         ef_mle = convert(ExponentialFamilyDistribution, M, p_mle)
         if kl_friendly
+            # Some of the distributions are using samples inside of the 
+            # `kldivergence` function, so we need to seed the random number generator
+            # the `kldivergence` is defined in Distributions.jl
+            # also see https://github.com/JuliaStats/Distributions.jl/issues/1667
+            Random.seed!(Random.default_rng(), rand(rng, UInt64))
             kl_div = kldivergence(convert(Distribution, ef_mle), distribution)
             @test kl_div < 0.1
         else
