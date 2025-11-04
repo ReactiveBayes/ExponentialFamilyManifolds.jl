@@ -75,9 +75,7 @@ end
     import ExponentialFamilyManifolds: SinglePointManifold
 
     for a in (2.0, 3.0),
-        b in (10.0, 5.0),
-        c in (1.0, 10.0, -1.0),
-        eps in (1e-4, 1e-5, 1e-8, 1e-10),
+        b in (10.0, 5.0), c in (1.0, 10.0, -1.0), eps in (1e-4, 1e-5, 1e-8, 1e-10),
         stepsize in (ConstantLength(0.1), ConstantLength(0.01), ConstantLength(0.001))
 
         f(M, x) = (a .* x .^ 2 .+ b .* x .+ c)[1]

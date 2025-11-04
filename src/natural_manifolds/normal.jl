@@ -51,7 +51,7 @@ function partition_point(
     ::Type{MvNormalMeanCovariance}, dims::Tuple{Int}, p, conditioner=nothing
 )
     k = first(dims)
-    return ArrayPartition(view(p, 1:k), -reshape(view(p, (k + 1):(k + k^2)), (k, k)))
+    return ArrayPartition(view(p, 1:k), -reshape(view(p, (k + 1):(k + k ^ 2)), (k, k)))
 end
 
 """
@@ -62,7 +62,7 @@ Transforms the `q` to a compatible representation for the exponential family dis
 function transform_back!(p, M::NaturalParametersManifold{ℝ,MvNormalMeanCovariance}, q)
     k = first(getdims(M))
     p[1:k] .= 1.0 .* view(q, 1:k)
-    p[(k + 1):(k + k^2)] .= -view(q, (k + 1):(k + k^2))
+    p[(k + 1):(k + k ^ 2)] .= -view(q, (k + 1):(k + k ^ 2))
     return p
 end
 

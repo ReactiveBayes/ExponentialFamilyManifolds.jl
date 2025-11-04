@@ -5,9 +5,6 @@
 Get the natural manifold base for the `Gamma` distribution.
 """
 function get_natural_manifold_base(::Type{Gamma}, ::Tuple{}, conditioner=nothing)
-    # return ProductManifold(
-    #     ShiftedPositiveNumbers(static(-1)), ShiftedNegativeNumbers(static(0))
-    # )
     return ProductManifold(PositiveVectors(1), PositiveVectors(1))
 end
 
