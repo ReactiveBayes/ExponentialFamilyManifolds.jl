@@ -14,3 +14,10 @@ end
         return Dirichlet(10rand(rng, 3))
     end
 end
+
+@testitem "Dirichlet dimension errors" begin
+    import ExponentialFamily: Dirichlet
+    import ExponentialFamilyManifolds: get_natural_manifold, get_natural_manifold_base
+    @test_throws ArgumentError get_natural_manifold(Dirichlet, ())
+    @test_throws ArgumentError get_natural_manifold_base(Dirichlet, ())
+end
