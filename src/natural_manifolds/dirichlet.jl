@@ -43,11 +43,13 @@ simplex and therefore needs the number of components `K` to construct the manifo
 Use `get_natural_manifold(Dirichlet, (K,))`, for example `get_natural_manifold(Dirichlet, (3,))`.
 """
 function get_natural_manifold_base(::Type{Dirichlet}, ::Tuple{}, conditioner=nothing)
-    throw(ArgumentError(
-        "Dirichlet requires an explicit dimension `K`. " *
-        "Call `ExponentialFamilyManifolds.get_natural_manifold(Dirichlet, (K,))` " *
-        "for example `get_natural_manifold(Dirichlet, (3,))`."
-    ))
+    throw(
+        ArgumentError(
+            "Dirichlet requires an explicit dimension `K`. " *
+            "Call `ExponentialFamilyManifolds.get_natural_manifold(Dirichlet, (K,))` " *
+            "for example `get_natural_manifold(Dirichlet, (3,))`.",
+        ),
+    )
 end
 
 """
@@ -57,9 +59,10 @@ Guard method for partition_point when dims == (). Provides a clearer error than 
 MethodError. Users should pass the dimension tuple `(K,)` to work with Dirichlet.
 """
 function partition_point(::Type{Dirichlet}, ::Tuple{}, p, conditioner=nothing)
-    throw(ArgumentError(
-        "Dirichlet requires an explicit dimension `K` when partitioning points. " *
-        "Call `get_natural_manifold(Dirichlet, (K,))` (e.g. `(3,)`) and retry."
-    ))
+    throw(
+        ArgumentError(
+            "Dirichlet requires an explicit dimension `K` when partitioning points. " *
+            "Call `get_natural_manifold(Dirichlet, (K,))` (e.g. `(3,)`) and retry.",
+        ),
+    )
 end
-

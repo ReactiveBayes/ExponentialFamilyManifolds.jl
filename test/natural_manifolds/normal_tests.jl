@@ -62,3 +62,19 @@ end
         return MvNormalMeanCovariance(m, C)
     end
 end
+
+@testitem "MvNormalMeanCovariance dimension errors" begin
+    import ExponentialFamily: MvNormalMeanCovariance
+    import ExponentialFamilyManifolds: get_natural_manifold, get_natural_manifold_base
+
+    @test_throws ArgumentError get_natural_manifold(MvNormalMeanCovariance, ())
+    @test_throws ArgumentError get_natural_manifold_base(MvNormalMeanCovariance, ())
+end
+
+@testitem "MvNormalMeanScalePrecision dimension errors" begin
+    import ExponentialFamily: MvNormalMeanScalePrecision
+    import ExponentialFamilyManifolds: get_natural_manifold, get_natural_manifold_base
+
+    @test_throws ArgumentError get_natural_manifold(MvNormalMeanScalePrecision, ())
+    @test_throws ArgumentError get_natural_manifold_base(MvNormalMeanScalePrecision, ())
+end
