@@ -42,6 +42,25 @@ function get_natural_manifold_base(
     return ProductManifold(Euclidean(k), SymmetricPositiveDefinite(k))
 end
 
+# Guard for missing dimension in MvNormalMeanCovariance
+"""
+    get_natural_manifold_base(::Type{MvNormalMeanCovariance}, ::Tuple{}, conditioner=nothing)
+
+Raises an ArgumentError when the manifold is requested without the required
+dimension tuple `(K,)`. The multivariate normal distribution needs the number
+of variables `K`.
+"""
+function get_natural_manifold_base(
+    ::Type{MvNormalMeanCovariance}, ::Tuple{}, conditioner=nothing
+)
+    throw(
+        ArgumentError(
+            "MvNormalMeanCovariance requires an explicit dimension `(K,)`. " *
+            "Example: `get_natural_manifold(MvNormalMeanCovariance, (3,))`.",
+        ),
+    )
+end
+
 """
     partition_point(::Type{MvNormalMeanCovariance}, dims::Tuple{Int}, p, conditioner = nothing)
 
@@ -52,6 +71,20 @@ function partition_point(
 )
     k = first(dims)
     return ArrayPartition(view(p, 1:k), -reshape(view(p, (k + 1):(k + k ^ 2)), (k, k)))
+end
+
+"""
+    partition_point(::Type{MvNormalMeanCovariance}, ::Tuple{}, p, conditioner=nothing)
+
+Guard that throws an ArgumentError for missing dimension.
+"""
+function partition_point(::Type{MvNormalMeanCovariance}, ::Tuple{}, p, conditioner=nothing)
+    throw(
+        ArgumentError(
+            "MvNormalMeanCovariance requires a dimension `(K,)` for partitioning points. " *
+            "Example: `get_natural_manifold(MvNormalMeanCovariance, (3,))`.",
+        ),
+    )
 end
 
 """
@@ -78,6 +111,23 @@ function get_natural_manifold_base(
     return ProductManifold(Euclidean(k), PositiveVectors(1))
 end
 
+# Guard for missing dimension in MvNormalMeanScalePrecision
+"""
+    get_natural_manifold_base(::Type{MvNormalMeanScalePrecision}, ::Tuple{}, conditioner=nothing)
+
+Raises an ArgumentError when called without dimension tuple `(K,)`.
+"""
+function get_natural_manifold_base(
+    ::Type{MvNormalMeanScalePrecision}, ::Tuple{}, conditioner=nothing
+)
+    throw(
+        ArgumentError(
+            "MvNormalMeanScalePrecision requires an explicit dimension `(K,)`. " *
+            "Example: `get_natural_manifold(MvNormalMeanScalePrecision, (3,))`.",
+        ),
+    )
+end
+
 """
     partition_point(::Type{MvNormalMeanCovariance}, dims::Tuple{Int}, p, conditioner = nothing)
 
@@ -88,6 +138,22 @@ function partition_point(
 )
     k = first(dims)
     return ArrayPartition(view(p, 1:k), -view(p, (k + 1):(k + 1)))
+end
+
+"""
+    partition_point(::Type{MvNormalMeanScalePrecision}, ::Tuple{}, p, conditioner=nothing)
+
+Guard that throws an ArgumentError for missing dimension.
+"""
+function partition_point(
+    ::Type{MvNormalMeanScalePrecision}, ::Tuple{}, p, conditioner=nothing
+)
+    throw(
+        ArgumentError(
+            "MvNormalMeanScalePrecision requires a dimension `(K,)` for partitioning points. " *
+            "Example: `get_natural_manifold(MvNormalMeanScalePrecision, (3,))`.",
+        ),
+    )
 end
 
 """
