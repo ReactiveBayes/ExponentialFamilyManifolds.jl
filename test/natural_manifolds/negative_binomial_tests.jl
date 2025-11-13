@@ -12,3 +12,12 @@ end
         return NegativeBinomial(rand(rng), rand(rng, 0.00001:0.01:1))
     end
 end
+
+@testitem "Conditioner errors" begin
+    import ExponentialFamily: NegativeBinomial
+    import ExponentialFamilyManifolds: get_natural_manifold_base, partition_point
+    @test_throws ArgumentError get_natural_manifold_base(NegativeBinomial, ())
+    @test_throws ArgumentError get_natural_manifold_base(NegativeBinomial, (), -1.0)
+    @test_throws ArgumentError partition_point(NegativeBinomial, (), 0.5)
+    @test_throws ArgumentError partition_point(NegativeBinomial, (), 0.5, -1.0)
+end
