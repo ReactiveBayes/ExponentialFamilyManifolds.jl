@@ -1,9 +1,10 @@
 using StableRNGs, ExponentialFamily, ManifoldsBase, LinearAlgebra
 using Distributions
 
-import ExponentialFamilyManifolds: get_natural_manifold, with_natural_metric, partition_point
+import ExponentialFamilyManifolds:
+    get_natural_manifold, with_natural_metric, partition_point
 
-function test_metric_manifold(f; seed=42, ndistributions=100, test_points = 10)
+function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -22,17 +23,20 @@ function test_metric_manifold(f; seed=42, ndistributions=100, test_points = 10)
         @test getnaturalparameters(ef_back) ≈ getnaturalparameters(ef)
         @test getconditioner(ef_back) == getconditioner(ef)
         @test isproper(ef_back) == true
-        @test ExponentialFamily.exponential_family_typetag(M) == ExponentialFamily.exponential_family_typetag(ef)
+        @test ExponentialFamily.exponential_family_typetag(M) ==
+            ExponentialFamily.exponential_family_typetag(ef)
 
         # proper forwarding
-        @test ManifoldsBase.get_forwarding_type(M, inner) == ManifoldsBase.StopForwardingType()
-        @test ManifoldsBase.get_forwarding_type(M, norm) == ManifoldsBase.StopForwardingType()
+        @test ManifoldsBase.get_forwarding_type(M, inner) ==
+            ManifoldsBase.StopForwardingType()
+        @test ManifoldsBase.get_forwarding_type(M, norm) ==
+            ManifoldsBase.StopForwardingType()
 
         #respect fisher metric
         for _ in 1:test_points
             p = rand(rng, M)
-            v = rand(rng, M; vector_at = p)
-            v_norm = 0.42*v./norm(M, p, v)
+            v = rand(rng, M; vector_at=p)
+            v_norm = 0.42*v ./ norm(M, p, v)
             @test check_geodesic(M, p, v_norm, tol=1e-3, error=:warn)
         end
     end
