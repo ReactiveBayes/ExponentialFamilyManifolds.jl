@@ -3,7 +3,7 @@ using Distributions
 
 import ExponentialFamilyManifolds: get_natural_manifold, with_natural_metric, partition_point
 
-function test_metric_manifold(f; seed=42, ndistributions=100, test_points = 5)
+function test_metric_manifold(f; seed=42, ndistributions=100, test_points = 10)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -30,7 +30,10 @@ function test_metric_manifold(f; seed=42, ndistributions=100, test_points = 5)
 
         #respect fisher metric
         for _ in 1:test_points
-            @test check_geodesic(M, rand(rng, M), rand(rng, M), error = :error)
+            p = rand(rng, M)
+            v = rand(rng, M; vector_at = p)
+            v_norm = 0.42*v./norm(M, p, v)
+            @test check_geodesic(M, p, v_norm, tol=1e-3, error=:warn)
         end
     end
 end
