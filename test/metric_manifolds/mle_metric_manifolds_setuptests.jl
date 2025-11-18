@@ -4,7 +4,7 @@ using Distributions, Random
 using Manopt
 import Distributions: kldivergence, Distribution
 
-import ExponentialFamilyManifolds: get_natural_manifold, partition_point, with_natural_metric
+import ExponentialFamilyManifolds: get_fisher_manifold, partition_point
 import ADTypes: AutoForwardDiff
 using ManifoldDiff
 import ManifoldDiff: TangentDiffBackend
@@ -25,8 +25,7 @@ function test_mle_works(
         T = ExponentialFamily.exponential_family_typetag(ef)
         dims = size(rand(rng, distribution))
         conditioner = getconditioner(ef)
-        NM = get_natural_manifold(T, dims, conditioner)
-        M = with_natural_metric(NM)
+        M = get_fisher_manifold(T, dims, conditioner)
 
         # Generate samples from the distribution
         samples = [rand(rng, distribution) for _ in 1:mle_samples]

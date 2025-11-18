@@ -4,7 +4,7 @@ using Distributions
 import ExponentialFamilyManifolds:
     get_fisher_manifold, partition_point
 
-function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10, maximal_norm=1)
+function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10, maximal_norm=1, tol=1e-3)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -36,7 +36,7 @@ function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10, ma
             p = rand(rng, M)
             v = rand(rng, M; vector_at=p)
             v_norm = maximal_norm*v ./ norm(M, p, v)
-            @test check_geodesic(M, p, v_norm, tol=1e-3, error=:warn)
+            @test check_geodesic(M, p, v_norm, tol=tol, error=:warn)
         end
     end
 end

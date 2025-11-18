@@ -1,4 +1,4 @@
-function geodesic_exact(t, x0, v0)
+function _geodesic_exact_bernoulli(t, x0, v0)
     # Compute metric at initial point
     g0 = exp(x0) / (1 + exp(x0))^2
 
@@ -21,7 +21,7 @@ function geodesic_exact(t, x0, v0)
     return x, v
 end
 
-function log_map(x0, x1)
+function _log_map_bernoulli(x0, x1)
     C = 2 * atan(exp(x0/2))
     C1 = 2 * atan(exp(x1/2))
 
@@ -40,20 +40,20 @@ end
 
 # Exponential map implementations - these override the default forwarding behavior
 function ManifoldsBase.exp!(::WithMetric{F,Bernoulli,NaturalMetric}, q, p, X) where {F}
-    x, _ = geodesic_exact(1, p[1], X[1])
+    x, _ = _geodesic_exact_bernoulli(1, p[1], X[1])
     q .= x
     return q
 end
 
 function ManifoldsBase.exp(::WithMetric{F,Bernoulli,NaturalMetric}, p, X) where {F}
-    x, _ = geodesic_exact(1, p[1], X[1])
+    x, _ = _geodesic_exact_bernoulli(1, p[1], X[1])
     return [x]
 end
 
 function ManifoldsBase.exp_fused!(
     ::WithMetric{F,Bernoulli,NaturalMetric}, q, p, X, t::Number
 ) where {F}
-    x, _ = geodesic_exact(1, p[1], X[1])
+    x, _ = _geodesic_exact_bernoulli(1, p[1], X[1])
     q .= x
     return q
 end
@@ -61,17 +61,17 @@ end
 function ManifoldsBase.exp_fused(
     ::WithMetric{F,Bernoulli,NaturalMetric}, p, X, t::Number
 ) where {F}
-    x, _ = geodesic_exact(t, p[1], X[1])
+    x, _ = _geodesic_exact_bernoulli(t, p[1], X[1])
     return [x]
 end
 
 function ManifoldsBase.log!(::WithMetric{F,Bernoulli,NaturalMetric}, X, p, q) where {F}
-    X .= log_map(p[1], q[1])
+    X .= _log_map_bernoulli(p[1], q[1])
     return X
 end
 
 function ManifoldsBase.log(::WithMetric{F,Bernoulli,NaturalMetric}, p, q) where {F}
-    return log_map(p[1], q[1])
+    return _log_map_bernoulli(p[1], q[1])
 end
 
 _sqrtg_eta(η) = 0.5 .* sech.(η ./ 2)
