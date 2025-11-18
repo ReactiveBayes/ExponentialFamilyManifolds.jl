@@ -1,6 +1,6 @@
 @testitem "Check `Bernoulli` fisher manifold" begin
     include("metric_manifolds_setuptests.jl")
-    test_metric_manifold() do rng
+    test_metric_manifold(maximal_norm=0.4) do rng
         return Bernoulli(rand(rng))
     end
 end

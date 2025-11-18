@@ -10,7 +10,12 @@ struct WithMetric{𝔽,T,Mode<:MetricMode,M<:NaturalParametersManifold} <:
 end
 ManifoldsBase.decorated_manifold(W::WithMetric) = W.man
 
-# convenience constructors
+function get_fisher_manifold(::Type{T}, dims, conditioner=nothing) where {T}
+    natural_manifold = ExponentialFamilyManifolds.get_natural_manifold(T, dims, conditioner)
+    fisher_manifold = with_natural_metric(natural_manifold)
+    return fisher_manifold
+end
+
 function with_natural_metric(M::NaturalParametersManifold{F}) where {F}
     ef_typetag = ExponentialFamily.exponential_family_typetag(M)
     WithMetric{F,ef_typetag,NaturalMetric,typeof(M)}(M)
