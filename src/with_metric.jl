@@ -55,6 +55,7 @@ function ManifoldsBase.norm(M::WithMetric{F,T,NaturalMetric}, p, X) where {F,T}
     return sqrt(inner(M, p, X, X))
 end
 
+# Default implementation for other distributions
 function ManifoldsBase.inner(M::WithMetric{F,T,NaturalMetric}, p, X, Y) where {F,T}
     ef = convert(ExponentialFamilyDistribution, M, p)
     fisher_info = fisherinformation(ef)

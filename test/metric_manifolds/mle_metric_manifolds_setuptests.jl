@@ -16,6 +16,8 @@ function test_mle_works(
     ndistributions=10,
     backend_type=AutoForwardDiff(),
     kl_friendly=true,
+    use_sectional_curvature=false,
+    sectional_curvature_bound=0.0
 )
     rng = StableRNG(seed)
 
@@ -39,8 +41,18 @@ function test_mle_works(
             return ManifoldDiff.gradient(M, (p) -> cost(M, p), p, backend)
         end
 
-        stepsize = DistanceOverGradients()
-        p_mle = gradient_descent(M, cost, grad, rand(rng, M); stepsize=stepsize)
+        if use_sectional_curvature
+            stepsize = DistanceOverGradients(M; use_curvature=true, sectional_curvature_bound=sectional_curvature_max(M))
+        else
+            stepsize = DistanceOverGradients()
+        end
+        # Use more iterations and tighter tolerance for better convergence
+        stopping_criterion = StopWhenGradientNormLess(1e-4)
+        p_mle = gradient_descent(
+            M, cost, grad, rand(rng, M);
+            stepsize=stepsize,
+            stopping_criterion=stopping_criterion
+        )
         ef_mle = convert(ExponentialFamilyDistribution, M, p_mle)
         if kl_friendly
             # Some of the distributions are using samples inside of the 
