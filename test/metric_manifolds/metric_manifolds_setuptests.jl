@@ -2,9 +2,9 @@ using StableRNGs, ExponentialFamily, ManifoldsBase, LinearAlgebra
 using Distributions
 
 import ExponentialFamilyManifolds:
-    get_natural_manifold, with_natural_metric, partition_point
+    get_fisher_manifold, partition_point
 
-function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10)
+function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10, maximal_norm=1)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
@@ -14,8 +14,7 @@ function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10)
 
         ef = convert(ExponentialFamilyDistribution, distribution)
         T = ExponentialFamily.exponential_family_typetag(ef)
-        NM = get_natural_manifold(T, dims, getconditioner(ef))
-        M = with_natural_metric(NM)
+        M = get_fisher_manifold(T, dims, getconditioner(ef))
         η = partition_point(T, dims, getnaturalparameters(ef), getconditioner(ef))
 
         @test is_point(M, η, error=:error)
@@ -36,7 +35,7 @@ function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10)
         for _ in 1:test_points
             p = rand(rng, M)
             v = rand(rng, M; vector_at=p)
-            v_norm = 0.42*v ./ norm(M, p, v)
+            v_norm = maximal_norm*v ./ norm(M, p, v)
             @test check_geodesic(M, p, v_norm, tol=1e-3, error=:warn)
         end
     end
