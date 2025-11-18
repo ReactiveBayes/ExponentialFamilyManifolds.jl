@@ -197,10 +197,11 @@ function geodesic_exact_eta(
     u0  = _hp_to_hyp(xy0)
 
     # tangent: η -> (x,y) -> hyperboloid
+    # Fisher metric = 2 × Poincaré, so scale by 1/√2 when pushing to hyperboloid
     Jη_xy = _J_eta_to_xy(η0)
     V0    = Jη_xy * Xη0
     Jxy_u = _J_hp_to_hyp(xy0)
-    W0    = Jxy_u * V0
+    W0    = (Jxy_u * V0) / sqrt(T(2))
 
     # geodesic on hyperboloid
     u_t  = _hyperbolic_exp(u0, W0, T(t))
@@ -237,10 +238,11 @@ function log_map_eta(ηp::SVector{2,T}, ηq::SVector{2,T}) where {T<:Real}
     ξ   = _hyperbolic_log(up, uq)
 
     # back to (x,y) then η (tangent at p)
+    # Fisher metric = 2 × Poincaré, so scale by √2 when pulling from hyperboloid
     Ju_xy = _J_hyp_to_hp(up)
     Vp    = Ju_xy * ξ
     Jxy_η = _J_xy_to_eta(xyp)
-    Xη    = Jxy_η * Vp
+    Xη    = (Jxy_η * Vp) * sqrt(T(2))
 
     return Xη
 end
@@ -344,20 +346,20 @@ function ManifoldsBase.parallel_transport_to(
     up  = _hp_to_hyp(xyp)
     uq  = _hp_to_hyp(xyq)
 
-    # push X to hyperboloid
+    # push X to hyperboloid (scale by 1/√2 for metric)
     Jη_xy = _J_eta_to_xy(ηp)
     Vp    = Jη_xy * Xη
     Jxy_u = _J_hp_to_hyp(xyp)
-    Wp    = Jxy_u * Vp
+    Wp    = (Jxy_u * Vp) / sqrt(2.0)
 
     # parallel transport on hyperboloid
     Wq    = _hyperbolic_parallel_transport(up, uq, Wp)
 
-    # pull back to η at q
+    # pull back to η at q (scale by √2 for metric)
     Ju_xy = _J_hyp_to_hp(uq)
     Vq    = Ju_xy * Wq
     Jxy_η = _J_xy_to_eta(xyq)
-    Xηq   = Jxy_η * Vq
+    Xηq   = (Jxy_η * Vq) * sqrt(2.0)
 
     Xq    = _eta_to_X(Xηq)
     return ArrayPartition([Xq[1]], [Xq[2]])
