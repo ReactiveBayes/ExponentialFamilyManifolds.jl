@@ -1,7 +1,7 @@
 @testitem "Check `Normal` natural manifold" begin
     include("metric_manifolds_setuptests.jl")
 
-    test_metric_manifold(tol=1e-2, maximal_norm=0.11 ) do rng
+    test_metric_manifold(tol=1e-5, maximal_norm=0.3 ) do rng
         return NormalMeanVariance(10randn(rng), rand(rng)+1)
     end
 end
