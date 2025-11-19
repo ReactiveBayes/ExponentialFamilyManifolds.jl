@@ -11,10 +11,14 @@ using RecursiveArrayTools: ArrayPartition
     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp!), ::Type
 ) where {F} = _STOP
 @inline ManifoldsBase.get_forwarding_type(
-    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp_fused), ::Type
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.exp_fused),
+    ::Type,
 ) where {F} = _STOP
 @inline ManifoldsBase.get_forwarding_type(
-    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp_fused!), ::Type
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.exp_fused!),
+    ::Type,
 ) where {F} = _STOP
 @inline ManifoldsBase.get_forwarding_type(
     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.log), ::Type
@@ -348,16 +352,6 @@ function log_map(p, q)
     return X
 end
 
-function ManifoldsBase.exp!(
-    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, q, p, X
-) where {F}
-    p_t = geodesic_exact(1, p, X)
-    q[1] = p_t[1]
-    q[2] = p_t[2]
-    return q
-end
-
-
 function ManifoldsBase.exp_fused!(
     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, q, p, X, t::Number
 ) where {F}
@@ -367,15 +361,6 @@ function ManifoldsBase.exp_fused!(
     return q
 end
 
-# function ManifoldsBase.exp_fused(
-#     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, t::Number
-# ) where {F}
-#     p_t = geodesic_exact(t, p, X)
-#     return ArrayPartition([p_t[1]], [p_t[2]])
-# end
-
-# Log map implementations
-
 function ManifoldsBase.log!(
     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, X, p, q
 ) where {F}
@@ -383,12 +368,6 @@ function ManifoldsBase.log!(
     return X
 end
 
-# function ManifoldsBase.log(::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, q) where {F}
-#     X = log_map(p, q)
-#     return ArrayPartition([X[1]], [X[2]])
-# end
-
-# Parallel transport in natural parameters
 function ManifoldsBase.parallel_transport_to(
     M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, q; kwargs...
 ) where {F}
@@ -426,45 +405,6 @@ function ManifoldsBase.parallel_transport_to!(
 ) where {F}
     Y .= ManifoldsBase.parallel_transport_to(M, p, X, q; kwargs...)
     return Y
-end
-
-# Direction-based PT using exp
-
-function ManifoldsBase.parallel_transport_direction(
-    M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, d; kwargs...
-) where {F}
-    q = ManifoldsBase.exp(M, p, d)
-    return ManifoldsBase.parallel_transport_to(M, p, X, q; kwargs...)
-end
-
-function ManifoldsBase.parallel_transport_direction!(
-    M::WithMetric{F,NormalMeanVariance,NaturalMetric}, Y, p, X, d; kwargs...
-) where {F}
-    q = ManifoldsBase.exp(M, p, d)
-    return ManifoldsBase.parallel_transport_to!(M, Y, p, X, q; kwargs...)
-end
-
-# vector_transport_to aliases ParallelTransport, like in your Bernoulli code
-
-function ManifoldsBase.vector_transport_to(
-    M::WithMetric{F,NormalMeanVariance,NaturalMetric},
-    p,
-    X,
-    q,
-    ::ManifoldsBase.ParallelTransport,
-) where {F}
-    return ManifoldsBase.parallel_transport_to(M, p, X, q)
-end
-
-function ManifoldsBase.vector_transport_to!(
-    M::WithMetric{F,NormalMeanVariance,NaturalMetric},
-    Y,
-    p,
-    X,
-    q,
-    ::ManifoldsBase.ParallelTransport,
-) where {F}
-    return ManifoldsBase.parallel_transport_to!(M, Y, p, X, q)
 end
 
 """
