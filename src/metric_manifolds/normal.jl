@@ -1,10 +1,113 @@
 using StaticArrays
 using RecursiveArrayTools: ArrayPartition
 
+# For NormalMeanVariance with NaturalMetric we also override geodesic / log / transport
+# related functions and curvature in `metric_manifolds/normal.jl`. Mark all of these as
+# non-forwarding for that specific case so they are never delegated to the decorated manifold.
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp), ::Type
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp!), ::Type
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp_fused), ::Type
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp_fused!), ::Type
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.log), ::Type
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.log!), ::Type
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_to),
+    ::Type,
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_to!),
+    ::Type,
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_direction),
+    ::Type,
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_direction!),
+    ::Type,
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.vector_transport_to),
+    ::Type,
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.vector_transport_to!),
+    ::Type,
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.sectional_curvature_max),
+    ::Type,
+) where {F} = _STOP
+
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp)
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp!)
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp_fused)
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.exp_fused!)
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.log)
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, ::typeof(ManifoldsBase.log!)
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_to),
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_to!),
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_direction),
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.parallel_transport_direction!),
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.vector_transport_to),
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.vector_transport_to!),
+) where {F} = _STOP
+@inline ManifoldsBase.get_forwarding_type(
+    ::WithMetric{F,NormalMeanVariance,NaturalMetric},
+    ::typeof(ManifoldsBase.sectional_curvature_max),
+) where {F} = _STOP
+
 # ============================================================================
 # Helper functions: coordinate conversions and hyperbolic geometry
 # ============================================================================
-
 # ------------------------------------------------------------------
 # Representation:
 #   manifold point p = (η₁, λ), where λ = -η₂ > 0
@@ -17,16 +120,12 @@ using RecursiveArrayTools: ArrayPartition
 @inline _X_to_eta(X) = SA[X[1], -X[2]]             # tangent: dη₁ = dη₁, dη₂ = -dλ
 @inline _eta_to_X(Xη::SVector{2}) = SA[Xη[1], -Xη[2]]
 
-# --- Basic conversions: natural ↔ mean/variance ↔ half-plane ---
-
-# (η₁, η₂) -> (μ, σ²)
 @inline function _eta_to_meanvariance(η1, η2)
     μ = -η1 / (2 * η2)
     σ² = -inv(2 * η2)
     return μ, σ²
 end
 
-# (μ, σ²) -> (η₁, η₂)
 @inline function _meanvariance_to_eta(μ, σ²)
     η1 = μ / σ²
     η2 = -inv(2 * σ²)
@@ -163,7 +262,7 @@ function _hyperbolic_log(u::SVector{3,T}, v::SVector{3,T}) where {T<:Real}
     end
     ip = _mdot(u, v)
     α = -ip
-    d = acosh(α+1e-3)
+    d = acosh(α)
     w = v - α*u          # v - α u, α = -⟨u,v⟩
     n2 = _mdot(w, w)
     if n2 <= zero(T)
@@ -249,12 +348,6 @@ function log_map(p, q)
     return X
 end
 
-# ============================================================================
-# ManifoldsBase method overrides
-# ============================================================================
-
-# Exponential map implementations
-
 function ManifoldsBase.exp!(
     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, q, p, X
 ) where {F}
@@ -264,10 +357,6 @@ function ManifoldsBase.exp!(
     return q
 end
 
-function ManifoldsBase.exp(::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X) where {F}
-    p_t = geodesic_exact(1, p, X)
-    return ArrayPartition([p_t[1]], [p_t[2]])
-end
 
 function ManifoldsBase.exp_fused!(
     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, q, p, X, t::Number
@@ -278,12 +367,12 @@ function ManifoldsBase.exp_fused!(
     return q
 end
 
-function ManifoldsBase.exp_fused(
-    ::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, t::Number
-) where {F}
-    p_t = geodesic_exact(t, p, X)
-    return ArrayPartition([p_t[1]], [p_t[2]])
-end
+# function ManifoldsBase.exp_fused(
+#     ::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, t::Number
+# ) where {F}
+#     p_t = geodesic_exact(t, p, X)
+#     return ArrayPartition([p_t[1]], [p_t[2]])
+# end
 
 # Log map implementations
 
@@ -294,10 +383,10 @@ function ManifoldsBase.log!(
     return X
 end
 
-function ManifoldsBase.log(::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, q) where {F}
-    X = log_map(p, q)
-    return ArrayPartition([X[1]], [X[2]])
-end
+# function ManifoldsBase.log(::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, q) where {F}
+#     X = log_map(p, q)
+#     return ArrayPartition([X[1]], [X[2]])
+# end
 
 # Parallel transport in natural parameters
 function ManifoldsBase.parallel_transport_to(
