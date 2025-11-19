@@ -59,8 +59,8 @@ function ManifoldsBase.norm(M::WithMetric{F,T,NaturalMetric}, p, X) where {F,T}
 end
 
 function ManifoldsBase.inner(
-    M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, Y
-) where {F}
+    M::WithMetric{F,T,NaturalMetric}, p, X, Y
+) where {F,T}
     natural_M = M.man
     Xη = jacobian_manifold_to_nat(natural_M, X)
     Yη = jacobian_manifold_to_nat(natural_M, Y)

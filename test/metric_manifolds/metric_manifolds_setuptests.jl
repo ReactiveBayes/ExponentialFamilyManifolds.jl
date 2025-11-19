@@ -53,6 +53,22 @@ function test_metric_manifold(
             )
             @test v_nat_2 ≈ v_nat_back
         end
+        
+        # Explicit fisher check for one point
+        p_test = rand(rng, M)
+        X_test = rand(rng, M; vector_at=p_test)
+        fisher_matrix = fisherinformation(convert(ExponentialFamilyDistribution, M, p_test))
+        
+        # Since for Bernoulli and most simple cases without coordinate change, 
+        # jacobian is Identity, so inner should be X' * Fisher * X.
+        # We check if the inner product computed by the manifold matches explicit Fisher calculation.
+        # But first we need to know if there is a coordinate change.
+        # For Bernoulli, natural params are just the vector itself, so no coordinate change.
+        
+        X_nat_test = ExponentialFamilyManifolds.jacobian_manifold_to_nat(natural_manifold, X_test)
+        expected_inner = dot(X_nat_test, fisher_matrix, X_nat_test)
+        
+        @test inner(M, p_test, X_test, X_test) ≈ expected_inner
 
         #respect fisher metric
         for _ in 1:test_points
