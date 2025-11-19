@@ -4,6 +4,16 @@ const _FWD = ManifoldsBase.SimpleForwardingType()
 abstract type MetricMode end
 struct NaturalMetric <: MetricMode end  # Fisher info in active coordinates
 
+
+"""
+    WithMetric(::Type{T}, metric, dims, base, conditioner)
+
+The manifold for the natural parameters of the distribution of type `T` with dimensions `dims`, equipeed with metric.
+An internal structure, use `get_fisher_manifold` to create an instance of a manifold for the natural parameters of distribution of type `T`.
+
+The key idea of this manifold that for it checked that goedesic is compatible with metric.
+For noe the main use is with `NaturalMetric` which is Fisher information in natural coordinates.
+"""
 struct WithMetric{𝔽,T,Mode<:MetricMode,M<:NaturalParametersManifold} <:
        AbstractDecoratorManifold{𝔽}
     man::M
