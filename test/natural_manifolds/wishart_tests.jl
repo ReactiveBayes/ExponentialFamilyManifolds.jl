@@ -28,3 +28,11 @@ end
         return WishartFast(3 + rand(rng), C)
     end
 end
+
+@testitem "WishartFast dimension errors" begin
+    import ExponentialFamily: WishartFast
+    import ExponentialFamilyManifolds: get_natural_manifold, get_natural_manifold_base
+
+    @test_throws ArgumentError get_natural_manifold(WishartFast, ())
+    @test_throws ArgumentError get_natural_manifold_base(WishartFast, ())
+end
