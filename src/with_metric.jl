@@ -65,9 +65,12 @@ function ManifoldsBase.norm(M::WithMetric{F,T,NaturalMetric}, p, X) where {F,T}
     return sqrt(inner(M, p, X, X))
 end
 
-# Default implementation for other distributions
-function ManifoldsBase.inner(M::WithMetric{F,T,NaturalMetric}, p, X, Y) where {F,T}
-    ef = convert(ExponentialFamilyDistribution, M, p)
+function ManifoldsBase.inner(M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, Y) where {F}
+    # work on the underlying natural-parameters manifold when taking Jacobians
+    natural_M = M.man
+    Xη = jacobian_manifold_to_nat(natural_M, X)
+    Yη = jacobian_manifold_to_nat(natural_M, Y)
+    ef = convert(ExponentialFamilyDistribution, M.man, p)
     fisher_info = fisherinformation(ef)
-    return dot(X, fisher_info, Y)
+    return dot(Xη, fisher_info, Yη)
 end
