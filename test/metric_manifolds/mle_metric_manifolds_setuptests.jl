@@ -17,7 +17,7 @@ function test_mle_works(
     backend_type=AutoForwardDiff(),
     kl_friendly=true,
     use_sectional_curvature=false,
-    sectional_curvature_bound=0.0
+    sectional_curvature_bound=0.0,
 )
     rng = StableRNG(seed)
 
@@ -42,16 +42,21 @@ function test_mle_works(
         end
 
         if use_sectional_curvature
-            stepsize = DistanceOverGradients(M; use_curvature=true, sectional_curvature_bound=sectional_curvature_max(M))
+            stepsize = DistanceOverGradients(
+                M; use_curvature=true, sectional_curvature_bound=sectional_curvature_max(M)
+            )
         else
             stepsize = DistanceOverGradients()
         end
         # Use more iterations and tighter tolerance for better convergence
         stopping_criterion = StopWhenGradientNormLess(1e-4)
         p_mle = gradient_descent(
-            M, cost, grad, rand(rng, M);
+            M,
+            cost,
+            grad,
+            rand(rng, M);
             stepsize=stepsize,
-            stopping_criterion=stopping_criterion
+            stopping_criterion=stopping_criterion,
         )
         ef_mle = convert(ExponentialFamilyDistribution, M, p_mle)
         if kl_friendly

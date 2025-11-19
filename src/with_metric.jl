@@ -4,7 +4,6 @@ const _FWD = ManifoldsBase.SimpleForwardingType()
 abstract type MetricMode end
 struct NaturalMetric <: MetricMode end  # Fisher info in active coordinates
 
-
 """
     WithMetric(::Type{T}, metric, dims, base, conditioner)
 
@@ -65,7 +64,9 @@ function ManifoldsBase.norm(M::WithMetric{F,T,NaturalMetric}, p, X) where {F,T}
     return sqrt(inner(M, p, X, X))
 end
 
-function ManifoldsBase.inner(M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, Y) where {F}
+function ManifoldsBase.inner(
+    M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, Y
+) where {F}
     # work on the underlying natural-parameters manifold when taking Jacobians
     natural_M = M.man
     Xη = jacobian_manifold_to_nat(natural_M, X)

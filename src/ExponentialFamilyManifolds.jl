@@ -1,6 +1,7 @@
 module ExponentialFamilyManifolds
 
-using BayesBase, ExponentialFamily, ManifoldsBase, Manifolds, Random, LinearAlgebra, StaticArrays
+using BayesBase,
+    ExponentialFamily, ManifoldsBase, Manifolds, Random, LinearAlgebra, StaticArrays
 
 include("single_point_manifold.jl")
 include("natural_manifolds.jl")

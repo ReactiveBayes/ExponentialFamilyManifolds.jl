@@ -1,10 +1,11 @@
 using StableRNGs, ExponentialFamily, ManifoldsBase, LinearAlgebra
 using Distributions
 
-import ExponentialFamilyManifolds:
-    get_fisher_manifold, partition_point
+import ExponentialFamilyManifolds: get_fisher_manifold, partition_point
 
-function test_metric_manifold(f; seed=42, ndistributions=100, test_points=10, maximal_norm=1, tol=1e-3)
+function test_metric_manifold(
+    f; seed=42, ndistributions=100, test_points=10, maximal_norm=1, tol=1e-3
+)
     rng = StableRNG(seed)
 
     foreach(1:ndistributions) do _
