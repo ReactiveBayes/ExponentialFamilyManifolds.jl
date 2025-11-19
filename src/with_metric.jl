@@ -32,12 +32,6 @@ end
 
 # When NaturalMetric is active, do NOT forward inner/norm. We implement them on the wrapper.
 @inline ManifoldsBase.get_forwarding_type(
-    ::WithMetric{F,T,NaturalMetric}, ::Any, ::typeof(inner)
-) where {F,T} = _STOP
-@inline ManifoldsBase.get_forwarding_type(
-    ::WithMetric{F,T,NaturalMetric}, ::Any, ::typeof(norm)
-) where {F,T} = _STOP
-@inline ManifoldsBase.get_forwarding_type(
     ::WithMetric{F,T,NaturalMetric}, ::typeof(inner)
 ) where {F,T} = _STOP
 @inline ManifoldsBase.get_forwarding_type(
