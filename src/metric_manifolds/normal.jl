@@ -163,7 +163,7 @@ function _hyperbolic_log(u::SVector{3,T}, v::SVector{3,T}) where {T<:Real}
     end
     ip = _mdot(u, v)
     α = -ip
-    d = acosh(α)
+    d = acosh(α+1e-3)
     w = v - α*u          # v - α u, α = -⟨u,v⟩
     n2 = _mdot(w, w)
     if n2 <= zero(T)
@@ -300,7 +300,6 @@ function ManifoldsBase.log(::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, 
 end
 
 # Parallel transport in natural parameters
-
 function ManifoldsBase.parallel_transport_to(
     M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, q; kwargs...
 ) where {F}

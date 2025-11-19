@@ -67,7 +67,6 @@ end
 function ManifoldsBase.inner(
     M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, Y
 ) where {F}
-    # work on the underlying natural-parameters manifold when taking Jacobians
     natural_M = M.man
     Xη = jacobian_manifold_to_nat(natural_M, X)
     Yη = jacobian_manifold_to_nat(natural_M, Y)

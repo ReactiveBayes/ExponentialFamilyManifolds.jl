@@ -37,7 +37,10 @@ function test_metric_manifold(
             p = rand(rng, M)
             v = rand(rng, M; vector_at=p)
             v_norm = maximal_norm*v ./ norm(M, p, v)
+            v2 = rand(rng, M; vector_at=p)
             @test check_geodesic(M, p, v_norm, tol=tol, error=:warn)
+            default_vector_transport = ManifoldsBase.default_vector_transport_method(M)
+            @test check_vector_transport(M, default_vector_transport, p, v_norm, v2)
         end
     end
 end
