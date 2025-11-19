@@ -32,6 +32,28 @@ function test_metric_manifold(
         @test ManifoldsBase.get_forwarding_type(M, norm) ==
             ManifoldsBase.StopForwardingType()
 
+        # check jacobians are inverses
+        natural_manifold = ManifoldsBase.decorated_manifold(M)
+        for _ in 1:test_points
+            p = rand(rng, M)
+            v = rand(rng, M; vector_at=p)
+            
+            v_nat = ExponentialFamilyManifolds.jacobian_manifold_to_nat(natural_manifold, v)
+            v_back = ExponentialFamilyManifolds.jacobian_nat_to_manifold(
+                natural_manifold, v_nat
+            )
+            @test v ≈ v_back
+
+            v_nat_2 = rand(rng, M; vector_at=p) # vectors are in same space
+            v_man = ExponentialFamilyManifolds.jacobian_nat_to_manifold(
+                natural_manifold, v_nat_2
+            )
+            v_nat_back = ExponentialFamilyManifolds.jacobian_manifold_to_nat(
+                natural_manifold, v_man
+            )
+            @test v_nat_2 ≈ v_nat_back
+        end
+
         #respect fisher metric
         for _ in 1:test_points
             p = rand(rng, M)
