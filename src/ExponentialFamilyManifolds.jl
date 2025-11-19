@@ -27,6 +27,7 @@ include("natural_manifolds/weibull.jl")
 include("natural_manifolds/wishart.jl")
 
 # metric Manifolds
+include("metric_manifolds/jacobians.jl")
 include("metric_manifolds/bernoulli.jl")
 include("metric_manifolds/normal.jl")
 end

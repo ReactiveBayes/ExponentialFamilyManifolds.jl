@@ -425,19 +425,12 @@ function ManifoldsBase.vector_transport_to!(
     return ManifoldsBase.parallel_transport_to!(M, Y, p, X, q)
 end
 
-function ManifoldsBase.inner(M::WithMetric{F,NormalMeanVariance,NaturalMetric}, p, X, Y) where {F}
-    # For NormalMeanVariance, manifold coords are (η₁, λ) but Fisher matrix is in (η₁, η₂)
-    # Transform tangent vectors: (dη₁, dλ) -> (dη₁, dη₂) where dη₂ = -dλ
-    Xη = [X[1], -X[2]]
-    Yη = [Y[1], -Y[2]]
-    ef = convert(ExponentialFamilyDistribution, M, p)
-    fisher_info = fisherinformation(ef)
-    return dot(Xη, fisher_info, Yη)
-end
-
-# Sectional curvature for Normal manifold
-# The Normal Fisher manifold is isometric to hyperbolic space with curvature -1/2
-# (Fisher metric = 2 × Poincaré metric, curvature scales as κ/c for metric c·g)
+"""
+Sectional curvature for Normal manifold
+The Normal Fisher manifold is isometric to hyperbolic space with curvature -1/2
+(Fisher metric = 2 × Poincaré metric, curvature scales as κ/c for metric c·g)
+"""
 function ManifoldsBase.sectional_curvature_max(::WithMetric{F,NormalMeanVariance,NaturalMetric}) where {F}
+    
     return -0.5
 end
