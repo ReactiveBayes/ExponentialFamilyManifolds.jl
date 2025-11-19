@@ -11,15 +11,15 @@ function jacobian_manifold_to_nat(
 end
 
 """
-    jacobian_manifold_to_nat!(M, X_nat, X_manifold)
+    jacobian_nat_to_manifold(M, X_nat)
 
-Transform tangent vector from manifold coordinates to natural parameter coordinates.
+Transform tangent vector from natural parameter coordinates to manifold coordinates.
 """
 function jacobian_nat_to_manifold(
-    M::ExponentialFamilyManifolds.NaturalParametersManifold, X_manifold
+    M::ExponentialFamilyManifolds.NaturalParametersManifold, X_nat
 )
-    X_nat = jacobian_manifold_to_nat!(M, zero_vector(M, X_manifold), X_manifold)
-    return X_nat
+    X_manifold = jacobian_nat_to_manifold!(M, zero_vector(M, X_nat), X_nat)
+    return X_manifold
 end
 
 """

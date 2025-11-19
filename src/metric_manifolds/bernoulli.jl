@@ -149,7 +149,7 @@ function ManifoldsBase.parallel_transport_to(
     ::WithMetric{F,Bernoulli,NaturalMetric}, p, X, q; kwargs...
 ) where {F}
     s_p = _sqrtg_eta(p)
-    s_q = _sqrtg_eta(q)
+    s_q = _sqrtg_eta(q) 
     return X .* (s_p ./ s_q)
 end
 
