@@ -1,9 +1,11 @@
 module ExponentialFamilyManifolds
 
-using BayesBase, ExponentialFamily, ManifoldsBase, Manifolds, Random, LinearAlgebra
+using BayesBase,
+    ExponentialFamily, ManifoldsBase, Manifolds, Random, LinearAlgebra, StaticArrays
 
 include("single_point_manifold.jl")
 include("natural_manifolds.jl")
+include("with_metric.jl")
 
 include("natural_manifolds/bernoulli.jl")
 include("natural_manifolds/beta.jl")
@@ -24,4 +26,9 @@ include("natural_manifolds/poisson.jl")
 include("natural_manifolds/rayleigh.jl")
 include("natural_manifolds/weibull.jl")
 include("natural_manifolds/wishart.jl")
+
+# metric Manifolds
+include("metric_manifolds/jacobians.jl")
+include("metric_manifolds/bernoulli.jl")
+include("metric_manifolds/normal.jl")
 end
