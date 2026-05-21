@@ -64,3 +64,12 @@ end
         return Categorical(rand(rng, 3))
     end
 end
+
+@testitem "Conditioner errors" begin
+    import ExponentialFamily: Categorical
+    import ExponentialFamilyManifolds: get_natural_manifold_base, partition_point
+    @test_throws ArgumentError get_natural_manifold_base(Categorical, ())
+    @test_throws ArgumentError get_natural_manifold_base(Categorical, (), 0.0)
+    @test_throws ArgumentError partition_point(Categorical, (), 0.5)
+    @test_throws ArgumentError partition_point(Categorical, (), 0.5, 0.0)
+end

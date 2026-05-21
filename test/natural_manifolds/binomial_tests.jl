@@ -14,3 +14,12 @@ end
         return dist
     end
 end
+
+@testitem "Conditioner errors" begin
+    import ExponentialFamily: Binomial
+    import ExponentialFamilyManifolds: get_natural_manifold_base, partition_point
+    @test_throws ArgumentError get_natural_manifold_base(Binomial, ())
+    @test_throws ArgumentError get_natural_manifold_base(Binomial, (), -1.0)
+    @test_throws ArgumentError partition_point(Binomial, (), 0.5)
+    @test_throws ArgumentError partition_point(Binomial, (), 0.5, -1.0)
+end
