@@ -4,7 +4,8 @@
     test_natural_manifold() do rng
         k = rand(rng, 2:10)
         L = LowerTriangular(randn(rng, k, k))
-        C = L * L' + k * I
+        # Remove roundoff asymmetry from the triangular matrix product.
+        C = Matrix(Symmetric(L * L' + k * I))
         return WishartFast(k + 2, C)
     end
 end
@@ -24,7 +25,8 @@ end
     ) do rng
         k = 2
         L = LowerTriangular(randn(rng, k, k))
-        C = L * L' + k * I
+        # Remove roundoff asymmetry from the triangular matrix product.
+        C = Matrix(Symmetric(L * L' + k * I))
         return WishartFast(3 + rand(rng), C)
     end
 end
