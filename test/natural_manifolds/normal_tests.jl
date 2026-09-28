@@ -11,9 +11,9 @@ end
 
     test_natural_manifold() do rng
         k = rand(rng, 1:10)
-        m = randn(k)
-        L = LowerTriangular(randn(k, k))
-        C = L * L' + k * I
+        m = randn(rng, k)
+        L = LowerTriangular(randn(rng, k, k))
+        C = Matrix(Symmetric(L * L' + k * I))
         return MvNormalMeanCovariance(m, C)
     end
 end
@@ -58,7 +58,7 @@ end
         k = 2
         m = randn(rng, k)
         L = LowerTriangular(randn(rng, k, k))
-        C = L * L' + k * I
+        C = Matrix(Symmetric(L * L' + k * I))
         return MvNormalMeanCovariance(m, C)
     end
 end

@@ -120,16 +120,16 @@ q_ef = convert(ExponentialFamilyDistribution, M, q)
 q_η  = getnaturalparameters(q_ef)
 ```
 
-Note that we performed the optimization in the natural parameters space, we can use `ExponentialFamily.jl` API to convert the vector fo natural parameters to the corresponding mean parameter space:
+We performed the optimization in natural parameter space. We can use the `ExponentialFamily.jl` API to convert the vector of natural parameters to the distribution's default parameters, which for `Beta` are the shape parameters `(α, β)`:
 
 ```@example optimization
-map(NaturalParametersSpace() => MeanParametersSpace(), Beta, q_η)
+map(NaturalParametersSpace() => DefaultParametersSpace(), Beta, q_η)
 ```
 
 As we can see the result is quite close to the actual distribution, which was used to generate the test data:
 
 ```@example optimization
-params(MeanParametersSpace(), dist)
+params(DefaultParametersSpace(), dist)
 ```
 
 Let's also check the result, by plotting the estimated distribution on top of the data.
