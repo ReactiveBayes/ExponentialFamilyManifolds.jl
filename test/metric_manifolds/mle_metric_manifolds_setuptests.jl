@@ -1,0 +1,74 @@
+using StableRNGs, ExponentialFamily, ManifoldsBase, LinearAlgebra
+using Distributions, Random
+
+using Manopt
+import Distributions: kldivergence, Distribution
+
+import ExponentialFamilyManifolds: get_fisher_manifold, partition_point
+import ADTypes: AutoForwardDiff
+using ManifoldDiff
+import ManifoldDiff: TangentDiffBackend
+
+function test_mle_works(
+    f;
+    seed=42,
+    mle_samples=1000,
+    ndistributions=10,
+    backend_type=AutoForwardDiff(),
+    kl_friendly=true,
+    use_sectional_curvature=false,
+    sectional_curvature_bound=0.0,
+)
+    rng = StableRNG(seed)
+
+    foreach(1:ndistributions) do _
+        distribution = f(rng)
+        ef = convert(ExponentialFamilyDistribution, distribution)
+        T = ExponentialFamily.exponential_family_typetag(ef)
+        dims = size(rand(rng, distribution))
+        conditioner = getconditioner(ef)
+        M = get_fisher_manifold(T, dims, conditioner)
+
+        # Generate samples from the distribution
+        samples = [rand(rng, distribution) for _ in 1:mle_samples]
+
+        function cost(M, p)
+            ef_candidate = convert(ExponentialFamilyDistribution, M, p)
+            return -mean(s -> ExponentialFamily.logpdf(ef_candidate, s), samples)
+        end
+
+        function grad(M, p, backend=TangentDiffBackend(backend_type))
+            return ManifoldDiff.gradient(M, (p) -> cost(M, p), p, backend)
+        end
+
+        if use_sectional_curvature
+            stepsize = DistanceOverGradients(
+                M; use_curvature=true, sectional_curvature_bound=sectional_curvature_max(M)
+            )
+        else
+            stepsize = DistanceOverGradients()
+        end
+        # Use more iterations and tighter tolerance for better convergence
+        stopping_criterion = StopWhenGradientNormLess(1e-4)
+        p_mle = gradient_descent(
+            M,
+            cost,
+            grad,
+            rand(rng, M);
+            stepsize=stepsize,
+            stopping_criterion=stopping_criterion,
+        )
+        ef_mle = convert(ExponentialFamilyDistribution, M, p_mle)
+        if kl_friendly
+            # Some of the distributions are using samples inside of the 
+            # `kldivergence` function, so we need to seed the random number generator
+            # the `kldivergence` is defined in Distributions.jl
+            # also see https://github.com/JuliaStats/Distributions.jl/issues/1667
+            Random.seed!(Random.default_rng(), rand(rng, UInt64))
+            kl_div = kldivergence(convert(Distribution, ef_mle), distribution)
+            @test kl_div < 0.1
+        else
+            @test getnaturalparameters(ef_mle) ≈ getnaturalparameters(ef) atol = 4e-1
+        end
+    end
+end
