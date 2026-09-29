@@ -12,3 +12,12 @@ end
         return Weibull(rand(rng), rand(rng))
     end
 end
+
+@testitem "Conditioner errors" begin
+    import ExponentialFamily: Weibull
+    import ExponentialFamilyManifolds: get_natural_manifold_base, partition_point
+    @test_throws ArgumentError get_natural_manifold_base(Weibull, ())
+    @test_throws ArgumentError get_natural_manifold_base(Weibull, (), -1.0)
+    @test_throws ArgumentError partition_point(Weibull, (), 0.5)
+    @test_throws ArgumentError partition_point(Weibull, (), 0.5, -1.0)
+end
